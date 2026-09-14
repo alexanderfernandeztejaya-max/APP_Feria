@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tecno-Feria 2026 | UABJB</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="assets/css/global.css?v=10">
+    <link rel="stylesheet" href="features/proyecto/proyecto.css">
+    <link rel="stylesheet" href="features/auth/auth.css?v=2">
+    <link rel="stylesheet" href="features/dashboard/dashboard.css">
+    <link rel="stylesheet" href="features/admin/admin.css">
+    <link rel="stylesheet" href="features/informes/informes.css">
+    <link rel="stylesheet" href="features/resultados/resultados.css?v=3">
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body class="login-active">
+
+    <section id="login-screen" class="modern-login-container section-animate">
+    
+        <div class="login-form-side">
+            
+            <div id="login-card" class="modern-form-wrapper">
+                <div class="university-branding animate-fade-up delay-100" style="margin-bottom: 15px;">
+                    
+                </div>
+
+                <h1 class="animate-fade-up delay-100" style="font-size: 2.8rem; font-weight: 800; color: var(--azul-uab); line-height: 1.1; margin-bottom: 5px;">
+                   Bienvenido a la Tecno-Feria <span style="color: var(--rojo-uab);">2026</span>
+                </h1>
+                <p class="animate-fade-up delay-200 text-muted" style="margin-bottom: 2rem;">Ingrese su usuario habilitado para participar.</p>
+    
+                <form onsubmit="handleLogin(event)" class="modern-form animate-fade-up delay-300">
+                    <div class="input-group">
+                        <label>Usuario / CI</label>
+                        <div class="glass-input-wrapper">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" id="userInput" placeholder="Ej. Su carnet" required>
+                        </div>
+                    </div>
+    
+                    <div class="input-group animate-fade-up delay-400">
+                        <label>Contraseña</label>
+                        <div class="glass-input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="passInput" placeholder="••••••••" required>
+                        </div>
+                    </div>
+    
+                    <div class="form-actions animate-fade-up delay-500">
+                        <label class="checkbox-container"><input type="checkbox"><span>Recordarme</span></label>
+                        <a href="#" onclick="toggleAuthMode(event, 'recover')" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                    </div>
+    
+                    <button type="submit" class="btn-modern-login animate-fade-up delay-600">Acceder al Sistema</button>
+                </form>
+            </div>
+    
+            <div id="register-card" class="modern-form-wrapper" style="display: none;">
+                <h1 class="animate-fade-up delay-100" style="font-size: 2rem;">Registro de Expositor</h1>
+                <p class="animate-fade-up delay-200 text-muted">Cree su cuenta para subir la documentación de su proyecto a la feria.</p>
+                
+                <form onsubmit="handleRegister(event)" class="modern-form animate-fade-up delay-300">
+                    
+                    <div style="max-height: 48vh; overflow-y: auto; padding-right: 10px; margin-bottom: 15px;">
+                        
+                        <div class="input-group">
+                            <label>Nombre Completo</label>
+                            <div class="glass-input-wrapper">
+                                <i class="fas fa-user input-icon"></i>
+                                <input type="text" id="regName" placeholder="Ej. Juan Pérez" required>
+                            </div>
+                        </div>
+        
+                        <div class="input-group">
+                            <label>Carnet de Identidad (Será su Usuario)</label>
+                            <div class="glass-input-wrapper">
+                                <i class="fas fa-id-card input-icon"></i>
+                                <input type="text" id="regCI" placeholder="Ej. 1234567" required>
+                            </div>
+                        </div>
+        
+                        <div class="input-group">
+                            <label>Institución (Colegio/Universidad)</label>
+                            <div class="glass-input-wrapper">
+                                <i class="fas fa-university input-icon"></i>
+                                <select id="regInstitucion" required style="width: 100%; border: none; background: transparent; color: #fff; font-size: 0.95rem; outline: none; cursor: pointer; appearance: auto;">
+                                    <option value="" disabled selected style="color: #333;">Cargando instituciones...</option>
+                                </select>
+                            </div>
+                        </div>
+        
+                        <div class="input-group">
+                            <label>Correo Electrónico</label>
+                            <div class="glass-input-wrapper">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <input type="email" id="regEmail" placeholder="ejemplo@correo.com" required>
+                            </div>
+                        </div>
+        
+                        <div class="input-group">
+                            <label>Número de Celular</label>
+                            <div class="glass-input-wrapper">
+                                <i class="fas fa-phone input-icon"></i>
+                                <input type="tel" id="regPhone" placeholder="Ej. 71234567" required>
+                            </div>
+                        </div>
+        
+                        <div class="input-group" style="margin-bottom: 5px;">
+                            <label>Crear Contraseña</label>
+                            <div class="glass-input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="regPass" placeholder="••••••••" required>
+                            </div>
+                        </div>
+                        
+                    </div>
+    
+                    <button type="submit" class="btn-modern-login">Crear Cuenta y Entrar</button>
+                </form>
+                
+                <div class="auth-toggle modern-auth-toggle animate-fade-up delay-400">
+                    <button class="btn-outline" onclick="toggleAuthMode(event, 'login')"><i class="fas fa-arrow-left"></i> Volver al Login</button>
+                </div>
+            </div>
+
+            <div id="recover-card" class="modern-form-wrapper" style="display: none;">
+                <h1 class="animate-fade-up delay-100" style="font-size: 2rem;">Restablecer</h1>
+                <p class="animate-fade-up delay-200 text-muted">Le enviaremos un enlace seguro a su correo.</p>
+                
+                <form onsubmit="window.recuperarContrasena(event)" class="modern-form animate-fade-up delay-300">
+                    <div class="input-group">
+                        <div class="glass-input-wrapper">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" id="recoverEmail" placeholder="ejemplo@correo.com" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-modern-login animate-fade-up delay-400">Enviar Enlace</button>
+                </form>
+    
+                <div class="auth-toggle modern-auth-toggle animate-fade-up delay-500">
+                    <button class="btn-outline" onclick="toggleAuthMode(event, 'login')"><i class="fas fa-arrow-left"></i> Volver al Login</button>
+                </div>
+            </div>
+    
+            <div id="preregister-card" class="modern-form-wrapper" style="display: none; border-top: 5px solid var(--rojo-uab); padding-top: 15px;">
+                <h1 class="animate-fade-up delay-100" style="font-size: 1.8rem; color: var(--rojo-uab); text-align: center; margin-bottom: 5px;">
+                    <i class="fas fa-ticket-alt"></i> Habilitación
+                </h1>
+                <p class="animate-fade-up delay-200 text-muted" style="text-align: center; margin-bottom: 20px; font-size: 0.9rem;">
+                    Regístrese aquí para poder votar por los proyectos dentro de la feria.
+                </p>
+
+                <form onsubmit="handlePreRegistro(event)" class="modern-form animate-fade-up delay-300">
+                    <div class="input-group">
+                        <label>Carnet de Identidad (CI)</label>
+                        <div class="glass-input-wrapper"><i class="fas fa-id-card input-icon"></i><input type="text" id="preCI" placeholder="Ej. 1234567" required></div>
+                    </div>
+                    <div class="input-group">
+                        <label>Nombre Completo</label>
+                        <div class="glass-input-wrapper"><i class="fas fa-user input-icon"></i><input type="text" id="preNombre" placeholder="Ej. Ana López" required></div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Institución (Colegio/Universidad)</label>
+                        <div style="position: relative; margin-bottom: 8px;">
+                            <i class="fas fa-university input-icon" style="position: absolute; left: 14px; top: 14px; z-index: 10;"></i>
+                            <select id="preInst" required onchange="window.toggleOtro(this, 'caja-pre-otro', 'preInstOtro')" style="width: 100%; padding: 12px 12px 12px 42px; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; box-sizing: border-box; font-size: 0.95rem; background: rgba(255, 255, 255, 0.08); color: #fff; cursor: pointer; appearance: none;">
+                                <option value="" disabled selected style="color: #333;">Cargando instituciones...</option>
+                            </select>
+                            <i class="fas fa-chevron-down" style="position: absolute; right: 14px; top: 16px; color: #ccc; pointer-events: none;"></i>
+                        </div>
+                        <div id="caja-pre-otro" style="display: none; position: relative;">
+                            <i class="fas fa-pencil-alt input-icon" style="position: absolute; left: 14px; top: 14px;"></i>
+                            <input type="text" id="preInstOtro" placeholder="Escriba el nombre aquí..." style="width: 100%; padding: 12px 12px 12px 42px; border: 1px solid rgba(255,255,255,0.4); border-radius: 6px; box-sizing: border-box; font-size: 0.95rem; background: rgba(255,255,255,0.15); color: #fff;">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-modern-login animate-fade-up delay-400" style="background-color: var(--rojo-uab); margin-top: 10px;">Habilitarme para Votar</button>
+                </form>
+                <div class="auth-toggle modern-auth-toggle animate-fade-up delay-500">
+                    <button class="btn-outline" onclick="toggleAuthMode(event, 'login')"><i class="fas fa-arrow-left"></i> Volver al Login</button>
+                </div>
+            </div>
+    
+        </div>
+        <div class="login-image-side animate-slide-right">
+            <div class="institutional-logos-overlay animate-fade-up delay-200">
+                <img src="assets/img/logo_sistemas.png" alt="Ingeniería de Sistemas" class="overlay-logo">
+                <img src="assets/img/logo_iisp.png" alt="I.I.S.P." class="overlay-logo">
+            </div>
+            <div class="hero-bg" style="background-image: url('assets/img/fondo_feria.png');"></div>
+        </div>
+    </section>
+
+    <div id="main-content" style="display: none;">
+        
+        <header id="main-header">
+            <nav class="navbar">
+                <div class="logo">
+                    <img src="assets/img/LogoAcreditada.jpeg" alt="Carrera Acreditada" class="logo-nav">
+                    <span>INSTITUTO DE INVESTIGACIÓN INTERACCIÓN SOCIAL Y POSGRADO - CARRERA DE INGENIERIA DE SISTEMAS</span>
+                </div>
+                <div class="menu-toggle" onclick="toggleMenu()">
+                    <i class="fas fa-bars"></i>
+                </div>
+
+                <ul class="nav-links" id="nav-links-menu">
+                    <li><a href="javascript:void(0)" onclick="navigate('inicio', this); toggleMenu()" class="active">INICIO</a></li>
+                    <li id="nav-mi-proyecto"><a href="javascript:void(0)" onclick="navigate('mi-proyecto', this); toggleMenu()">MI PROYECTO</a></li>
+                    <li id="nav-registro"><a href="javascript:void(0)" onclick="navigate('registro', this); toggleMenu()">REGISTRO Y ADM.</a></li>
+                    <li id="nav-evaluacion"><a href="javascript:void(0)" onclick="navigate('evaluacion', this); toggleMenu(); window.cargarProyectosParaEvaluar()">EVALUACIÓN</a></li>
+                    <li id="nav-resultados"><a href="javascript:void(0)" onclick="navigate('resultados', this); toggleMenu(); window.calcularResultadosEnTiempoReal()">RESULTADOS</a></li>
+                    <li id="nav-informes"><a href="javascript:void(0)" onclick="navigate('informes', this); toggleMenu()">INFORMES</a></li>
+                    <li><button onclick="logout()" class="btn-logout" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i></button></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section id="inicio" class="hero section-animate">
+            <div class="hero-scroll-container">
+                <div class="hero-top-wrap">
+                    <div class="hero-3-column-layout">
+                        <div class="hero-side-logo">
+                            <div class="main-circle">
+                                <img src="assets/img/OIP (2).png" alt="Escudo Universidad UABJB" class="institutional-shield logo-spin-float">
+                            </div>
+                        </div>
+                        <div class="hero-center-content">
+                            <h1 class="text-floating">TECNO FERIA <br><span>2026</span></h1>
+                            <h3 class="slogan text-floating-delayed">Innovación Tecnológica — Asegurando el futuro</h3>
+                            <a href="https://maps.app.goo.gl/2G7uufFuBCZD28Fd7" target="_blank" class="location-box location-link">
+                                <i class="fas fa-map-marker-alt"></i><p>FACULTAD DE INGENIERÍA Y TECNOLOGÍA <br>CAMPUS UNIVERSITARIO - UABJB</p>
+                            </a>
+                            <div class="bottom-info-bar-center">
+                                <p id="welcome-message">Bienvenido — Gestión Digital Tecno Feria</p>
+                            </div>
+                        </div>
+                        <div class="hero-side-logo">
+                            <div class="main-circle">
+                                <img src="assets/img/OIP.png" alt="Escudo Oficial IISP" class="institutional-shield logo-spin-float">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- SECCIÓN 1: CÓMO FUNCIONA EL SISTEMA (FASES DE LA FERIA) -->
+                <!-- ========================================================= -->
+                <div class="institutional-info-section" style="margin-bottom: 40px;">
+                    <div class="info-section-header" style="border-bottom-color: #3498db;">
+                        <h2><i class="fas fa-project-diagram" style="color: #3498db;"></i> Proceso Oficial de Evaluación</h2>
+                    </div>
+                    <div class="info-cards-grid">
+                        
+                        <!-- TARJETA FASE 1: TRIBUNAL -->
+                        <div class="info-card-item" style="border-left-color: #dc3545;">
+                            <div class="card-icon-circle" style="background-color: #dc3545;"><i class="fas fa-file-signature"></i></div>
+                            <h3>Etapa 1: Pre-selección</h3>
+                            <p>Los proyectos registrados son evaluados de manera técnica y documental por un <b>Tribunal Calificador</b> asignado por la institución.</p>
+                            <ul style="color: #e0e0e0; margin-top: 15px; margin-left: 20px; font-size: 1.1rem; line-height: 1.6;">
+                                <li>Equivale al <b>60% de la nota final</b>.</li>
+                                <li>Calificación máxima de 100 puntos.</li>
+                                <li>Requiere un mínimo de <b style="color: #dc3545;">51 pts ponderados</b> para aprobar y clasificar a la feria en vivo.</li>
+                            </ul>
+                        </div>
+
+                        <!-- TARJETA FASE 2: PÚBLICO -->
+                        <div class="info-card-item" style="border-left-color: #28a745;">
+                            <div class="card-icon-circle" style="background-color: #28a745;"><i class="fas fa-qrcode"></i></div>
+                            <h3>Etapa 2: Defensa Pública</h3>
+                            <p>Los proyectos pre-seleccionados se exponen presencialmente en los stands de la Tecno Feria, sometiéndose a la votación de la comunidad.</p>
+                            <ul style="color: #e0e0e0; margin-top: 15px; margin-left: 20px; font-size: 1.1rem; line-height: 1.6;">
+                                <li>Equivale al <b>40% de la nota final</b>.</li>
+                                <li>Los visitantes emiten estrellas (del 1 al 10) escaneando el código QR único del stand.</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+                
+                <!-- ========================================================= -->
+                <!-- SECCIÓN 2: SOBRE NUESTRA INSTITUCIÓN -->
+                <!-- ========================================================= -->
+                <div class="institutional-info-section">
+                    <div class="info-section-header"><h2><i class="fas fa-university"></i> Sobre Nuestra Institución</h2></div>
+                    <div class="info-cards-grid">
+                        <div class="info-card-item">
+                            <div class="card-icon-circle"><i class="fas fa-bullseye"></i></div>
+                            <h3>Misión</h3>
+                            <p>Desarrollar investigación dentro de la carrera de Ingeniería de Sistemas, apoyando a la formación de profesionales idóneos con conciencia crítica, capaces de enriquecer la ciencia y la tecnología, impulsando el progreso, integración regional y la interacción social mediante la difusión de la investigación científica.</p>
+                        </div>
+                        <div class="info-card-item">
+                            <div class="card-icon-circle"><i class="fas fa-eye"></i></div>
+                            <h3>Visión</h3>
+                            <p>La Investigación Científica, es el proceso consciente, ético, responsable, creativo, innovador, orientado a resolver problemas vinculados al desarrollo regional tecnológico, social y económico, para generar nuevos conocimientos científicos.</p>
+                        </div>
+                        <div class="info-card-item full-width-card">
+                            <div class="card-icon-circle"><i class="fas fa-graduation-cap"></i></div>
+                            <h3>Objetivos</h3>
+                            <p>Promover la creatividad, innovación y transferencia tecnológica a través de la exposición de proyectos, soluciones y prototipos desarrollados por estudiantes, docentes e investigadores y emprendedores tecnológicos egresados de la Carrera Ingeniería de Sistemas de la Universidad Autónoma del Beni José Ballivián contribuyendo al desarrollo regional con pertinencia tecnológica y compromiso social.</p>
+                        </div>
+                        <div class="info-card-item">
+                            <div class="card-icon-circle"><i class="fas fa-users"></i></div>
+                            <h3>¿Quiénes Somos?</h3>
+                            <p>Somos una comunidad académica comprometida con la excelencia, conformada por estudiantes, docentes e investigadores de la Carrera de Ingeniería de Sistemas de la UABJB. Nos une la pasión por el desarrollo de software, la innovación tecnológica y la creación de soluciones digitales que impulsen el progreso de nuestra región amazónica y de todo el país.</p>
+                        </div>
+                        <div class="info-card-item">
+                            <div class="card-icon-circle"><i class="fas fa-sitemap"></i></div>
+                            <h3>Comité Organizador</h3>
+                            <ul style="color: #e0e0e0; margin-top: 15px; margin-left: 20px; font-size: 1.1rem; line-height: 1.6;">
+                                <li><strong>M.Sc. Ing. Eduardo Morales Barroso</strong> - <em>Director</em></li>
+                                <li><strong>M.Sc. Lic. William Chao Rivero</strong> - <em>Resp. Instituto de Investigación</em></li>
+                                <li><strong>Ing. Marco Antonio Durán Carvalho</strong> - <em>Resp. de Investigación I.I.I.S. y P.</em></li>
+                                <li><strong>Ing. Adriana Gómez Morant</strong> - <em>Resp. de Interacción Social I.I.I.S. y P.</em></li>
+                                <li><strong>M.Sc. Lic. Danitza Zabala Moreno</strong> - <em>Docente Apoyo de Investigación</em></li>
+                                <li><strong>Lic. Luis Antonio Franco Apuri</strong> - <em>Docente Apoyo de Interacción Social</em></li>
+                                <li><strong>Ing. Jesús Elias Nieme Saavedra</strong> - <em>Docente Apoyo de Interacción Social</em></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="mi-proyecto" class="module-section section-animate" style="display: none;">
+            <div class="container">
+                <div class="header-module"><h2><i class="fas fa-laptop-code"></i> Mi Proyecto</h2></div>
+                <div class="admin-layout">
+                    <div class="form-container">
+                        <div class="form-card">
+                            <h3><i class="fas fa-file-code"></i> Subida de Documentación Oficial</h3>
+                            <form onsubmit="subirProyectoFeria(event)">
+                                <div class="form-group">
+                                    <label>Título del Proyecto</label>
+                                    <input type="text" id="proyTitulo" placeholder="Nombre de la innovación" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tipo de Expositor</label>
+                                    <select id="proyTipo" required>
+                                        <option value="" disabled selected>Seleccione el perfil de los autores...</option>
+                                        <option value="estudiantes">Estudiantes (Pregrado)</option>
+                                        <option value="docentes">Docentes Investigadores</option>
+                                        <option value="emprendimientos">Emprendimientos Tecnológicos (Estudiantes o Titulados C.I.S, U.A.B.J.B)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nombres de los Expositores (De 1 a 9 integrantes)</label>
+                                    <textarea id="proyIntegrantes" placeholder="Ej.Est.Aslhey Soto, Ing. María Gómez, Univ. Juan Pérez..." rows="3" required></textarea>
+                                </div>
+                                <!-- 🔥 AQUÍ ESTÁ EL CAMBIO A LAS 5 LÍNEAS DE INVESTIGACIÓN OFICIALES -->
+                                <div class="form-group">
+                                    <label>Eje Temático (Líneas de Investigación Oficiales)</label>
+                                    <select id="proyEje" required>
+                                        <option value="" disabled selected>Seleccione una línea de investigación oficial...</option>
+                                        <option value="Sistemas de Información para el Desarrollo Regional">Sistemas de Información para el Desarrollo Regional</option>
+                                        <option value="Tecnologías Emergentes y Transformación Digital">Tecnologías Emergentes y Transformación Digital</option>
+                                        <option value="Ingeniería de Software y Aplicaciones Web/Móviles">Ingeniería de Software y Aplicaciones Web/Móviles</option>
+                                        <option value="Gobierno Electrónico y Transparencia Pública">Gobierno Electrónico y Transparencia Pública</option>
+                                        <option value="TIC para la Gestión Ambiental y Agropecuaria">TIC para la Gestión Ambiental y Agropecuaria</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Subir Documentación (Solo formato PDF)</label>
+                                    <input type="file" id="proyArchivo" accept=".pdf" required style="padding: 8px;" onchange="validarPDF(this)">
+                                </div>
+                                <button type="submit" id="btnSubirProyecto" class="btn-save">Enviar Proyecto a Evaluación</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="votar-proyecto" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #002b5c; z-index: 99999; overflow-y: auto;">
+            <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                
+                <div style="background: white; padding: 35px 25px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; font-family: sans-serif;">
+                    
+                    <h3 style="color: #0056b3; margin-top: 0; font-size: 1.4rem; margin-bottom: 5px;"><i class="fas fa-mobile-alt"></i> Votación del Público</h3>
+                    <p style="color: #666; font-size: 0.85rem; margin-bottom: 20px;">Has escaneado el código QR del proyecto:</p>
+                    
+                    <div style="background: #f1f3f5; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                        <strong id="votar-titulo" style="color: #002b5c; font-size: 1.1rem;">Cargando...</strong>
+                    </div>
+        
+                    <form id="form-votacion" onsubmit="enviarCalificacion(event)">
+                        <input type="hidden" id="voto-idProy">
+                        <input type="hidden" id="voto-cat">
+        
+                        <div style="text-align: left; margin-bottom: 20px;">
+                            <label style="display: block; color: #555; font-size: 0.85rem; margin-bottom: 5px;">Carnet de Identidad (CI)</label>
+                            <div style="position: relative;">
+                                <i class="far fa-id-card" style="position: absolute; left: 14px; top: 14px; color: #999;"></i>
+                                <input type="number" id="voto-ci" placeholder="Ej. 1234567" required min="1" oninput="window.simularVerificacionCI()" style="width: 100%; padding: 12px 12px 12px 42px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; background: #f9f9f9;">
+                            </div>
+                            <div id="mensaje-validacion-ci" style="font-size: 0.85rem; margin-top: 5px; font-weight: bold;"></div>
+                        </div>
+        
+                        <div style="text-align: center; margin-bottom: 25px;">
+                            <label style="display: block; color: #555; font-size: 0.85rem; margin-bottom: 10px; text-align: left;">
+                                Calificación del Proyecto
+                            </label>
+                            
+                            <div id="star-rating-container" style="display: flex; justify-content: center; gap: 12px; font-size: 2.3rem; cursor: pointer; margin-bottom: 8px;">
+                                <i class="fas fa-star star-btn" id="star-1" onclick="window.calificarConEstrellas(1)" style="color: #ccc; transition: 0.2s;"></i>
+                                <i class="fas fa-star star-btn" id="star-2" onclick="window.calificarConEstrellas(2)" style="color: #ccc; transition: 0.2s;"></i>
+                                <i class="fas fa-star star-btn" id="star-3" onclick="window.calificarConEstrellas(3)" style="color: #ccc; transition: 0.2s;"></i>
+                                <i class="fas fa-star star-btn" id="star-4" onclick="window.calificarConEstrellas(4)" style="color: #ccc; transition: 0.2s;"></i>
+                                <i class="fas fa-star star-btn" id="star-5" onclick="window.calificarConEstrellas(5)" style="color: #ccc; transition: 0.2s;"></i>
+                            </div>
+
+                            <div id="texto-puntuacion" style="font-size: 0.9rem; font-weight: bold; color: #555; min-height: 20px;">
+                                Selecciona las estrellas para calificar
+                            </div>
+
+                            <input type="hidden" id="voto-puntaje" required>
+                        </div>
+        
+                        <button type="submit" id="btnEnviarVoto" style="width: 100%; padding: 14px; background: #0066cc; color: white; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-bottom: 15px;">
+                            Confirmar Voto
+                        </button>
+        
+                        <button type="button" onclick="window.location.href = window.location.pathname" style="width: 100%; padding: 12px; background: white; color: #555; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; cursor: pointer;">
+                            <i class="fas fa-arrow-left"></i> Volver al Login
+                        </button>
+                    </form>
+                </div>
+                
+            </div>
+        </section>
+        
+        <section id="pantalla-habilitacion" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #002b5c; z-index: 99999; overflow-y: auto;">
+            <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                
+                <div style="background: white; padding: 35px 25px; border-radius: 12px; border-top: 6px solid #d93025; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; font-family: sans-serif;">
+                    
+                    <h3 style="color: #d93025; margin-top: 0; font-size: 1.6rem; margin-bottom: 5px;">
+                        <i class="fas fa-ticket-alt"></i> Habilitación
+                    </h3>
+                    <p style="color: #666; font-size: 0.85rem; margin-bottom: 25px; line-height: 1.4;">
+                        Regístrese aquí para poder votar por los proyectos dentro de la feria.
+                    </p>
+
+                    <form id="form-habilitacion" onsubmit="registrarVisitanteBD(event)">
+                        
+                        <div style="text-align: left; margin-bottom: 15px;">
+                            <label style="display: block; color: #555; font-size: 0.85rem; margin-bottom: 5px;">Carnet de Identidad (CI)</label>
+                            <div style="position: relative;">
+                                <i class="far fa-id-card" style="position: absolute; left: 14px; top: 14px; color: #999;"></i>
+                                <input type="number" id="hab-ci" placeholder="Ej. 1234567" required min="1" style="width: 100%; padding: 12px 12px 12px 42px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; background: #f9f9f9;">
+                            </div>
+                        </div>
+
+                        <div style="text-align: left; margin-bottom: 15px;">
+                            <label style="display: block; color: #555; font-size: 0.85rem; margin-bottom: 5px;">Nombre Completo</label>
+                            <div style="position: relative;">
+                                <i class="far fa-user" style="position: absolute; left: 14px; top: 14px; color: #999;"></i>
+                                <input type="text" id="hab-nombre" placeholder="Ej. Ana López" required style="width: 100%; padding: 12px 12px 12px 42px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; background: #f9f9f9;">
+                            </div>
+                        </div>
+
+                        <div style="text-align: left; margin-bottom: 25px;">
+                            <label style="display: block; color: #555; font-size: 0.85rem; margin-bottom: 5px;">Institución (Colegio/Universidad)</label>
+                            
+                            <div style="position: relative; margin-bottom: 8px;">
+                                <i class="fas fa-university" style="position: absolute; left: 14px; top: 14px; color: #999; z-index: 10;"></i>
+                                <select id="hab-institucion" required onchange="window.toggleOtro(this, 'caja-hab-otro', 'hab-institucion-otro')" style="width: 100%; padding: 12px 12px 12px 42px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; background: #f9f9f9; color: #333; cursor: pointer; appearance: none;">
+                                    <option value="" disabled selected>Cargando instituciones...</option>
+                                </select>
+                                <i class="fas fa-chevron-down" style="position: absolute; right: 14px; top: 16px; color: #999; pointer-events: none;"></i>
+                            </div>
+                    
+                            <div id="caja-hab-otro" style="display: none; position: relative;">
+                                <i class="fas fa-pencil-alt" style="position: absolute; left: 14px; top: 14px; color: #999;"></i>
+                                <input type="text" id="hab-institucion-otro" placeholder="Escriba el nombre aquí..." style="width: 100%; padding: 12px 12px 12px 42px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; background: #fff;">
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btnHabilitar" style="width: 100%; padding: 14px; background: #d93025; color: white; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-bottom: 15px; transition: 0.3s;">
+                            Habilitarme para Votar
+                        </button>
+
+                        <button type="button" onclick="window.location.href = window.location.pathname" style="width: 100%; padding: 12px; background: white; color: #555; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; cursor: pointer;">
+                            <i class="fas fa-arrow-left"></i> Volver al Login
+                        </button>
+                    </form>
+                </div>
+                
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN DE ADMINISTRADOR Y FECHAS -->
+        <!-- ========================================================= -->
+        <section id="registro" class="module-section section-animate" style="display: none;">
+            <div class="container">
+                <div class="header-module"><h2><i class="fas fa-users-cog"></i> Registro y Administración</h2></div>
+                <div class="tabs-admin-center" style="flex-wrap: wrap;">
+                    <button class="tab-btn active" onclick="openTab(event, 'tab-proyectos')">Proyectos / QRs</button>
+                    <button class="tab-btn" onclick="openTab(event, 'tab-tribunales')">Tribunales</button>
+                    <button class="tab-btn" onclick="openTab(event, 'tab-admin-visitantes')">Habilitar Visitante</button>
+                    <button class="tab-btn" onclick="openTab(event, 'tab-visitantes'); window.cargarVotosPublico()">Votos del Público</button>
+                    <button class="tab-btn" onclick="openTab(event, 'tab-votos-tribunal'); window.cargarVotosTribunal()">Votos del Tribunal</button>
+                    <button class="tab-btn" onclick="openTab(event, 'tab-fechas'); window.cargarFechasActuales()">Fechas</button>
+                    <button class="tab-btn" onclick="openTab(event, 'tab-instituciones'); window.cargarTablaInstituciones()">Instituciones</button>
+                </div>
+                <div class="admin-layout">
+                    <div class="form-container">
+                        <div id="tab-proyectos" class="tab-content active section-animate" style="display: block;">
+                            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px; align-items: start;">
+                                
+                                <div style="display: flex; flex-direction: column; gap: 20px;">
+                                    <div id="qr-general-box" class="form-card text-center" style="margin-bottom: 0;">
+                                        <h3 style="font-size: 1.1rem; border-bottom: none; margin-bottom: 5px;"><i class="fas fa-id-card"></i> QR Registro</h3>
+                                        <p style="font-size: 0.8rem; color: #555; margin-bottom: 15px;">Para que los expositores creen su cuenta.</p>
+                                        <div class="qr-placeholder" style="width: 120px; height: 120px; margin: 0 auto 15px;"><i class="fas fa-qrcode qr-icon" style="font-size: 4rem;"></i></div>
+                                        <button onclick="window.imprimirQRExpositor()" style="background-color: #004080; color: white; width: 100%; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                                            <i class="fas fa-print"></i> Imprimir General
+                                        </button>
+                                    </div>
+
+                                    <div id="qr-habilitacion-box" class="form-card text-center" style="margin-bottom: 0;">
+                                        <h3 style="font-size: 1.1rem; border-bottom: none; margin-bottom: 5px; color: var(--rojo-uab);"><i class="fas fa-ticket-alt"></i> QR Habilitación</h3>
+                                        <p style="font-size: 0.8rem; color: #555; margin-bottom: 15px;">Para registrar visitantes en la entrada.</p>
+                                        <div class="qr-placeholder" style="width: 120px; height: 120px; margin: 0 auto 15px; border-color: var(--rojo-uab);">
+                                            <i class="fas fa-qrcode qr-icon" style="font-size: 4rem; color: var(--rojo-uab);"></i>
+                                        </div>
+                                        <button onclick="window.imprimirQRHabilitacion()" style="background-color: #d93025; color: white; width: 100%; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                                            <i class="fas fa-print"></i> Imprimir Entrada
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-card" style="width: 100%; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+    
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                                        <h3 style="margin: 0; color: #002b5c; font-size: 1.4rem;"><i class="fas fa-list"></i> Proyectos Registrados</h3>
+                                        <button id="btnActualizarAdmin" onclick="window.cargarProyectosAdmin()" style="padding: 8px 16px; cursor: pointer; border-radius: 5px; background: #002b5c; color: white; border: none; font-weight: bold; transition: 0.3s;">
+                                            <i class="fas fa-sync-alt"></i> Actualizar Lista
+                                        </button>
+                                    </div>
+                                
+                                    <h4 style="color: #333; margin-bottom: 10px;"><i class="fas fa-user-graduate"></i> 1. Estudiantes (Pregrado)</h4>
+                                    <div style="overflow-x: auto; margin-bottom: 30px;">
+                                        <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                                            <thead>
+                                                <tr style="background-color: #002b5c; color: white; text-align: left;">
+                                                    <th style="padding: 12px;">Proyecto</th>
+                                                    <th style="padding: 12px;">Expositores</th>
+                                                    <th style="padding: 12px; text-align: center;">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tabla-estudiantes"></tbody>
+                                        </table>
+                                    </div>
+                                
+                                    <h4 style="color: #333; margin-bottom: 10px;"><i class="fas fa-chalkboard-teacher"></i> 2. Docentes Investigadores</h4>
+                                    <div style="overflow-x: auto; margin-bottom: 30px;">
+                                        <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                                            <thead>
+                                                <tr style="background-color: #002b5c; color: white; text-align: left;">
+                                                    <th style="padding: 12px;">Proyecto</th>
+                                                    <th style="padding: 12px;">Expositores</th>
+                                                    <th style="padding: 12px; text-align: center;">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tabla-docentes"></tbody>
+                                        </table>
+                                    </div>
+                                
+                                    <h4 style="color: #333; margin-bottom: 10px;"><i class="fas fa-lightbulb"></i> 3. Emprendimientos Tecnológicos</h4>
+                                    <div style="overflow-x: auto; margin-bottom: 10px;">
+                                        <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                                            <thead>
+                                                <tr style="background-color: #002b5c; color: white; text-align: left;">
+                                                    <th style="padding: 12px;">Proyecto</th>
+                                                    <th style="padding: 12px;">Expositores</th>
+                                                    <th style="padding: 12px; text-align: center;">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tabla-emprendimientos"></tbody>
+                                        </table>
+                                    </div>
+                                
+                                </div>
+
+                            </div>
+                        </div>
+                        <div id="tab-tribunales" class="tab-content section-animate">
+                            <div class="form-card">
+                                <h3><i class="fas fa-gavel"></i> Registro de Tribunal</h3>
+                                <form onsubmit="registrarNuevoTribunal(event)">
+                                    <div class="form-group">
+                                        <label>Nombre del Evaluador</label>
+                                        <input type="text" id="tribNombre" placeholder="Ing. Nombre Apellido" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Especialidad</label>
+                                        <input type="text" id="tribEspecialidad" placeholder="Ej. Redes de Datos" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Categoría a Evaluar</label>
+                                        <select id="tribCategoria" required>
+                                            <option value="" disabled selected>Seleccione la categoría asignada...</option>
+                                            <option value="proyectos_estudiantes">Estudiantes (Pregrado)</option>
+                                            <option value="proyectos_docentes">Docentes Investigadores</option>
+                                            <option value="proyectos_emprendimientos">Emprendimientos Tecnológicos</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Alcance de Evaluación (Carga de trabajo)</label>
+                                        <select id="tribAlcance" required>
+                                            <option value="TODOS">⚡ Evaluar TODOS los proyectos de la categoría</option>
+                                            <option value="ESPECIFICOS">🎯 Asignar proyectos específicos...</option>
+                                        </select>
+                                    </div>
+                                    <div id="contenedor-lista-proyectos" style="display: none; margin-bottom: 15px; max-height: 160px; overflow-y: auto; background: rgba(0,0,0,0.25); padding: 12px; border-radius: 6px; border: 1px dashed #475569;">
+                                        <p style="color: #94a3b8; font-size: 12px; margin: 0;">Seleccione una categoría para cargar los proyectos...</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Correo Electrónico</label>
+                                        <input type="email" id="tribCorreo" placeholder="ejemplo@correo.com" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Usuario Asignado</label>
+                                        <input type="text" id="tribUsuario" placeholder="ej. tribunal_1" oninput="this.value = this.value.toLowerCase().replace(/\s/g, '')" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Contraseña Temporal</label>
+                                        <input type="text" id="tribPass" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                                    </div>
+                                    <button type="submit" id="btnGuardarTribunal" class="btn-save">
+                                        <i class="fas fa-user-shield"></i> Registrar y Enviar Credenciales
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="tab-visitantes" class="tab-content section-animate">
+                            <div class="form-card">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                                    <h3 style="margin: 0; border-bottom: none;"><i class="fas fa-mobile-alt"></i> Monitoreo de Votos del Público</h3>
+                                    <button onclick="window.cargarVotosPublico()" style="padding: 8px 16px; cursor: pointer; border-radius: 5px; background: #005f73; color: white; border: none; font-weight: bold; transition: 0.3s;">
+                                        <i class="fas fa-sync-alt"></i> Actualizar Votos
+                                    </button>
+                                </div>
+                                
+                                <h4 style="color: #333; margin-bottom: 10px;"><i class="fas fa-user-graduate"></i> 1. Estudiantes (Pregrado)</h4>
+                                <div class="table-responsive" style="box-shadow: none; border: 1px solid #eee; margin-bottom: 30px;">
+                                    <table class="ranking-table" style="font-size: 0.85rem; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: left;">Visitante / Institución</th>
+                                                <th style="text-align: left;">Proyecto Votado</th>
+                                                <th style="text-align: center;">Nota</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla-votos-est"></tbody>
+                                    </table>
+                                </div>
+
+                                <h4 style="color: #333; margin-bottom: 10px;"><i class="fas fa-chalkboard-teacher"></i> 2. Docentes Investigadores</h4>
+                                <div class="table-responsive" style="box-shadow: none; border: 1px solid #eee; margin-bottom: 30px;">
+                                    <table class="ranking-table" style="font-size: 0.85rem; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: left;">Visitante / Institución</th>
+                                                <th style="text-align: left;">Proyecto Votado</th>
+                                                <th style="text-align: center;">Nota</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla-votos-doc"></tbody>
+                                    </table>
+                                </div>
+
+                                <h4 style="color: #333; margin-bottom: 10px;"><i class="fas fa-lightbulb"></i> 3. Emprendimientos Tecnológicos</h4>
+                                <div class="table-responsive" style="box-shadow: none; border: 1px solid #eee; margin-bottom: 10px;">
+                                    <table class="ranking-table" style="font-size: 0.85rem; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: left;">Visitante / Institución</th>
+                                                <th style="text-align: left;">Proyecto Votado</th>
+                                                <th style="text-align: center;">Nota</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla-votos-emp"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 🔥 NUEVA PESTAÑA: REGISTRO MANUAL DE VISITANTES -->
+                        <div id="tab-admin-visitantes" class="tab-content section-animate" style="display: none;">
+                            <div class="form-card">
+                                <h3><i class="fas fa-ticket-alt"></i> Habilitación Manual de Visitantes</h3>
+                                <p style="color: #666; margin-bottom: 20px; font-size: 0.9rem;">Registre rápidamente el CI de un visitante en ventanilla sin necesidad de escanear el QR.</p>
+                                
+                                <form id="form-admin-habilitacion" onsubmit="registrarVisitanteBD(event)">
+                                    <div class="form-group">
+                                        <label>Carnet de Identidad (CI)</label>
+                                        <input type="number" id="admin-hab-ci" placeholder="Ej. 1234567" required min="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nombre Completo</label>
+                                        <input type="text" id="admin-hab-nombre" placeholder="Ej. Ana López" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Institución (Colegio/Universidad)</label>
+                                        <select id="admin-hab-institucion" required onchange="window.toggleOtro(this, 'caja-admin-hab-otro', 'admin-hab-institucion-otro')">
+                                            <option value="" disabled selected>Cargando instituciones...</option>
+                                        </select>
+                                        <div id="caja-admin-hab-otro" style="display: none; margin-top: 10px;">
+                                            <input type="text" id="admin-hab-institucion-otro" placeholder="Escriba el nombre aquí..." style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px;">
+                                        </div>
+                                    </div>
+                                    <button type="submit" id="btnAdminHabilitar" class="btn-save" style="background-color: var(--rojo-uab);">
+                                        <i class="fas fa-user-check"></i> Habilitar Visitante Ahora
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="tab-votos-tribunal" class="tab-content section-animate" style="display: none;">
+                            <div class="form-card">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                                    <h3 style="margin: 0; border-bottom: none;"><i class="fas fa-gavel"></i> Monitoreo de Votos del Tribunal</h3>
+                                    <button onclick="window.cargarVotosTribunal()" style="padding: 8px 16px; cursor: pointer; border-radius: 5px; background: #002b5c; color: white; border: none; font-weight: bold; transition: 0.3s;">
+                                        <i class="fas fa-sync-alt"></i> Actualizar Votos
+                                    </button>
+                                </div>
+                                
+                                <h4 style="color: #333; margin-bottom: 10px;"><i class="fas fa-user-graduate"></i> 1. Estudiantes (Pregrado)</h4>
+                                <div class="table-responsive" style="box-shadow: none; border: 1px solid #eee; margin-bottom: 30px;">
+                                    <table class="ranking-table" style="font-size: 0.85rem; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: left;">Tribunal</th>
+                                                <th style="text-align: left;">Proyecto Evaluado</th>
+                                                <th style="text-align: center;">Nota</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla-tribunal-est"></tbody>
+                                    </table>
+                                </div>
+
+                                <h4 style="color: #333; margin-bottom: 10px;"><i class="fas fa-chalkboard-teacher"></i> 2. Docentes Investigadores</h4>
+                                <div class="table-responsive" style="box-shadow: none; border: 1px solid #eee; margin-bottom: 30px;">
+                                    <table class="ranking-table" style="font-size: 0.85rem; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: left;">Tribunal</th>
+                                                <th style="text-align: left;">Proyecto Evaluado</th>
+                                                <th style="text-align: center;">Nota</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla-tribunal-doc"></tbody>
+                                    </table>
+                                </div>
+
+                                <h4 style="color: #333; margin-bottom: 10px;"><i class="fas fa-lightbulb"></i> 3. Emprendimientos Tecnológicos</h4>
+                                <div class="table-responsive" style="box-shadow: none; border: 1px solid #eee; margin-bottom: 10px;">
+                                    <table class="ranking-table" style="font-size: 0.85rem; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: left;">Tribunal</th>
+                                                <th style="text-align: left;">Proyecto Evaluado</th>
+                                                <th style="text-align: center;">Nota</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla-tribunal-emp"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 🔥 PESTAÑA: CONFIGURACIÓN DE FECHAS -->
+                        <div id="tab-fechas" class="tab-content section-animate" style="display: none;">
+                            <div class="form-card">
+                                <h3 style="color: var(--azul-uab); margin-bottom: 20px;"><i class="fas fa-calendar-alt"></i> Configuración Global de Fechas</h3>
+                                <p style="color: #666; margin-bottom: 25px; font-size: 0.9rem;">Modifique los plazos límite. Los cambios afectarán inmediatamente a todos los usuarios del sistema.</p>
+                                
+                                <div class="form-group">
+                                    <label>Cierre de Registro de Expositores:</label>
+                                    <input type="datetime-local" id="confFechaRegistro" required style="padding: 10px; border-radius: 5px; width: 100%; border: 1px solid #ccc; font-family: inherit;">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Cierre de Subida / Modificación de Proyectos:</label>
+                                    <input type="datetime-local" id="confFechaSubida" required style="padding: 10px; border-radius: 5px; width: 100%; border: 1px solid #ccc; font-family: inherit;">
+                                </div>
+                                
+                                <div class="form-group" style="margin-bottom: 30px;">
+                                    <label>Apertura Oficial de Resultados (Ranking del Público):</label>
+                                    <input type="datetime-local" id="confFechaResultados" required style="padding: 10px; border-radius: 5px; width: 100%; border: 1px solid #ccc; font-family: inherit;">
+                                </div>
+                
+                                <button onclick="window.guardarNuevasFechas()" class="btn-save" style="background-color: #28a745;">
+                                    <i class="fas fa-save"></i> Guardar Nuevas Fechas
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 🔥 PESTAÑA: GESTIÓN DE INSTITUCIONES -->
+                        <div id="tab-instituciones" class="tab-content section-animate" style="display: none;">
+                            <div class="form-card" style="background: rgba(255, 255, 255, 0.05) !important;">
+                                <h3 style="color: #60a5fa !important; margin-bottom: 20px;"><i class="fas fa-university"></i> Gestión de Instituciones</h3>
+                                <p style="color: #cbd5e1 !important; margin-bottom: 20px; font-size: 0.9rem;">Agregue o elimine los colegios y facultades que aparecerán en los formularios de registro.</p>
+                                
+                                <form onsubmit="window.agregarInstitucion(event)" style="display: flex; gap: 10px; margin-bottom: 30px; align-items: center; flex-wrap: wrap;">
+                                    <input type="text" id="nueva-inst-nombre" placeholder="Ej. U.E. Cristo Rey" required style="flex: 1; padding: 10px !important; border-radius: 5px !important; border: 1px solid #ccc !important; min-width: 200px !important; background: #ffffff !important; color: #000000 !important;">
+                                    
+                                    <select id="nueva-inst-tipo" required style="padding: 10px !important; border-radius: 5px !important; border: 1px solid #ccc !important; min-width: 220px !important; background: #ffffff !important; color: #000000 !important;">
+                                        <option value="Unidades Educativas Invitadas" style="color: #000 !important;">Unidad Educativa (Colegio)</option>
+                                        <option value="Universidad Autónoma del Beni (UABJB)" style="color: #000 !important;">Universidad (UABJB)</option>
+                                    </select>
+                                    
+                                    <button type="submit" style="background-color: #3b82f6 !important; padding: 10px 20px !important; margin: 0 !important; color: white !important; border: none !important; border-radius: 5px !important; font-weight: bold !important; cursor: pointer !important; width: auto !important; display: inline-block !important;">
+                                        <i class="fas fa-plus"></i> Agregar
+                                    </button>
+                                </form>
+                                
+                                <div class="table-responsive" style="border: 1px solid #475569 !important; background: #ffffff !important; border-radius: 8px !important; overflow-y: auto !important; overflow-x: auto !important; max-height: 400px !important;">
+                                    <table class="ranking-table" style="width: 100% !important; font-size: 0.95rem !important; border-collapse: collapse !important;">
+                                        <thead style="position: sticky; top: 0; z-index: 10; background-color: #f1f5f9 !important;">
+                                            <tr style="border-bottom: 2px solid #cbd5e1 !important;">
+                                                <th style="text-align: left !important; color: #0f172a !important; padding: 15px !important; font-weight: bold !important;">Nombre de Institución</th>
+                                                <th style="text-align: left !important; color: #0f172a !important; padding: 15px !important; font-weight: bold !important;">Categoría</th>
+                                                <th style="text-align: center !important; width: 120px !important; color: #0f172a !important; padding: 15px !important; font-weight: bold !important;">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla-admin-instituciones"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN DE EVALUACIÓN TÉCNICA -->
+        <!-- ========================================================= -->
+        <section id="evaluacion" class="module-section section-animate" style="display: none;">
+            <div class="container" style="max-width: 800px; margin: 0 auto;">
+                <div class="header-module text-center">
+                    <h2><i class="fas fa-clipboard-check"></i>Evaluación Técnica</h2>
+                </div>
+                <div class="eval-layout single-column">
+                    <div id="panel-tribunal" class="form-card eval-card tribunal-card">
+                        
+                        <div class="eval-header">
+                            <h3>Evaluación Tribunal (60% de Nota Final)</h3>
+                        </div>
+
+                        <form id="form-evaluacion-tribunal" class="eval-form" onsubmit="window.guardarEvaluacionTribunal(event)">
+                            <div class="form-group">
+                                <label>Seleccionar Proyecto a Evaluar</label>
+                                <select id="eval-select-proyecto" required>
+                                    <option value="" disabled selected>Cargando proyectos...</option>
+                                </select>
+                            </div>
+                            
+                            <div class="document-view">
+                                <p class="doc-info"><i class="fas fa-file-alt"></i> Documento Técnico del Proyecto</p>
+                                <a href="#" id="eval-btn-doc" class="btn-download" style="opacity: 0.5; cursor: not-allowed;" onclick="event.preventDefault(); alert('Seleccione un proyecto primero');">
+                                    <i class="fas fa-eye"></i> Ver Documento Técnico
+                                </a>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Puntaje Técnico (1-100)</label>
+                                <input type="number" id="eval-nota" min="0" max="100" placeholder="Ej. 85" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Observaciones o Retroalimentación</label>
+                                <input type="text" id="eval-obs" placeholder="Escriba aquí los comentarios...">
+                            </div>
+                            
+                            <button type="submit" class="btn-save btn-tribunal">Enviar Calificación Oficial</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN DE RESULTADOS (RANKING) -->
+        <!-- ========================================================= -->
+        <section id="resultados" class="module-section section-animate" style="display: none;">
+            <div class="container" style="max-width: 950px; margin: 0 auto;">
+                <div class="header-module text-center">
+                    <h2 style="margin-bottom: 25px;"><i class="fas fa-chart-pie"></i> Estadísticas en Tiempo Real</h2>
+                </div>
+        
+                <div id="bloque-res-est">
+                    <h3 style="color: var(--azul-uab); margin-top: 10px; margin-bottom: 15px; font-size: 1.3rem; text-align: left;">
+                        <i class="fas fa-user-graduate"></i> 1. Estudiantes (Pregrado)
+                    </h3>
+                    <div class="dashboard-oscuro" style="margin-bottom: 40px;">
+                        <div class="dash-grid">
+                            <div class="dash-tabla-container">
+                                <div class="dash-header-verde">Top Proyectos - Estudiantes</div>
+                                <div class="scroll-dash-tabla">
+                                    <table class="dash-tabla">
+                                        <thead><tr><th>Proyecto</th><th style="text-align: center;">Nota</th></tr></thead>
+                                        <tbody id="top-estudiantes"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="dash-grafico-container"><canvas id="graficoPastel"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div id="bloque-res-doc">
+                    <h3 style="color: var(--azul-uab); margin-top: 20px; margin-bottom: 15px; font-size: 1.3rem; text-align: left;">
+                        <i class="fas fa-chalkboard-teacher"></i> 2. Docentes Investigadores
+                    </h3>
+                    <div class="dashboard-oscuro" style="margin-bottom: 40px;">
+                        <div class="dash-grid">
+                            <div class="dash-tabla-container">
+                                <div class="dash-header-verde">Top Proyectos - Docentes</div>
+                                <div class="scroll-dash-tabla">
+                                    <table class="dash-tabla">
+                                        <thead><tr><th>Proyecto</th><th style="text-align: center;">Nota</th></tr></thead>
+                                        <tbody id="top-docentes"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="dash-grafico-container"><canvas id="graficoPastelDocentes"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div id="bloque-res-emp">
+                    <h3 style="color: var(--azul-uab); margin-top: 20px; margin-bottom: 15px; font-size: 1.3rem; text-align: left;">
+                        <i class="fas fa-lightbulb"></i> 3. Emprendimientos Tecnológicos
+                    </h3>
+                    <div class="dashboard-oscuro" style="margin-bottom: 20px;">
+                        <div class="dash-grid">
+                            <div class="dash-tabla-container">
+                                <div class="dash-header-verde">Top Proyectos - Emprendimientos</div>
+                                <div class="scroll-dash-tabla">
+                                    <table class="dash-tabla">
+                                        <thead><tr><th>Proyecto</th><th style="text-align: center;">Nota</th></tr></thead>
+                                        <tbody id="top-emprendimientos"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="dash-grafico-container"><canvas id="graficoPastelEmprendimientos"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="btn-mas-detalle" class="btn-detalle" onclick="window.alternarDetalles()">
+                    <i class="fas fa-list"></i> Más Detalle
+                </button>
+                
+                <div id="tabla-detalles" style="display: none;">
+                    
+                    <div id="bloque-det-est">
+                        <h4 style="color: var(--azul-uab); margin-top: 15px; margin-bottom: 10px;"><i class="fas fa-user-graduate"></i> Ranking Estudiantes</h4>
+                        <div class="scroll-tabla-proyectos" style="margin-bottom: 30px;">
+                            <table class="ranking-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center; width: 10%;">Lugar</th>
+                                        <th style="width: 40%;">Proyecto</th>
+                                        <th style="width: 15%;">Tribunal</th>
+                                        <th style="width: 15%;">Público</th>
+                                        <th style="width: 20%;">Nota Final</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ranking-estudiantes"></tbody>
+                            </table>
+                        </div>
+                    </div>
+        
+                    <div id="bloque-det-doc">
+                        <h4 style="color: var(--azul-uab); margin-top: 15px; margin-bottom: 10px;"><i class="fas fa-chalkboard-teacher"></i> Ranking Docentes</h4>
+                        <div class="scroll-tabla-proyectos" style="margin-bottom: 30px;">
+                            <table class="ranking-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center; width: 10%;">Lugar</th>
+                                        <th style="width: 40%;">Proyecto</th>
+                                        <th style="width: 15%;">Tribunal</th>
+                                        <th style="width: 15%;">Público</th>
+                                        <th style="width: 20%;">Nota Final</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ranking-docentes"></tbody>
+                            </table>
+                        </div>
+                    </div>
+        
+                    <div id="bloque-det-emp">
+                        <h4 style="color: var(--azul-uab); margin-top: 15px; margin-bottom: 10px;"><i class="fas fa-lightbulb"></i> Ranking Emprendimientos</h4>
+                        <div class="scroll-tabla-proyectos" style="margin-bottom: 30px;">
+                            <table class="ranking-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center; width: 10%;">Lugar</th>
+                                        <th style="width: 40%;">Proyecto</th>
+                                        <th style="width: 15%;">Tribunal</th>
+                                        <th style="width: 15%;">Público</th>
+                                        <th style="width: 20%;">Nota Final</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ranking-emprendimientos"></tbody>
+                            </table>
+                        </div>
+                    </div>
+        
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN DE INFORMES OFICIALES -->
+        <!-- ========================================================= -->
+        <section id="informes" class="module-section section-animate" style="display: none;">
+            <div class="container" style="max-width: 800px; margin: 0 auto;">
+                
+                <div class="header-module text-center">
+                    <h2><i class="fas fa-file-invoice"></i> Generación de Informes Oficiales</h2>
+                </div>
+        
+                <div id="informes-form-card" class="form-card">
+                    <h3><i class="fas fa-print"></i> Seleccione el Documento a Exportar</h3>
+                   <form onsubmit="imprimirInformeActual(event)">
+                        <div class="form-group">
+                            <label>Tipo de Informe</label>
+                            <select id="tipo-informe-select" required>
+                                <option value="" disabled selected>Seleccione una opción...</option>
+                                <option value="ranking">1. Cuadro de Honor y Ranking General (Ganadores)</option>
+                                <option value="ejes">2. Resumen de Proyectos por Eje Temático</option>
+                                <option value="tribunales">3. Acta Detallada de Calificaciones de Tribunales</option>
+                                <option value="visitantes">4. Reporte de Votación y Afluencia del Público</option>
+                                <option value="documentos">5. Reporte de Inscripción y Control de Documentación (PDFs)</option>
+                                <option value="expositores">6. Padrón Oficial de Expositores Registrados</option>
+                                <option value="padron_visitantes">7. Padrón Oficial de Visitantes y Estado de Votación</option>
+                                <option value="padron_tribunales">8. Padrón Oficial de Tribunales Evaluadores</option>
+                                <option value="no_clasificados">9. Reporte de Proyectos No Clasificados (Pre-selección)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-save" style="background-color: var(--azul-uab);">
+                            <i class="fas fa-file-pdf"></i> Generar e Imprimir Documento
+                        </button>
+                    </form>
+                </div>
+        
+                <div id="informe-impresion" style="display: none; background: white; color: black; padding: 20px; border-radius: 8px;">
+                </div>
+        
+            </div>
+        </section>
+
+    </div>
+    
+    <script type="module" src="core/firebase-config.js?v=3"></script>
+    <script src="core/utils.js"></script>
+    <script src="core/router.js?v=2"></script>
+    <script src="features/auth/auth.js?v=5"></script>
+    <script type="module" src="features/RestablecerContra/RestablecerContra.js"></script>
+    <script src="features/admin/admin.js"></script>
+    <script src="features/votacion/votacion.js"></script>
+    <script src="features/habilitacion/habilitacion.js"></script>
+    <script src="features/registro/registro.js"></script>
+    <script src="features/proyecto/proyecto.js"></script>
+    <script src="features/registroTribunal/registroTribunal.js"></script> 
+    <script src="features/evaluacion/evaluacion.js"></script>
+    <script src="features/resultados/resultados.js"></script>
+    <script src="features/informes/informes.js"></script>
+</body>
+</html>

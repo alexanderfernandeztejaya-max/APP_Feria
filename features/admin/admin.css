@@ -1,0 +1,115 @@
+/* ==========================================================================
+   FEATURE: ADMIN (REGISTRO, TRIBUNALES Y VOTOS) - MODO GLASSMORFISMO
+   ========================================================================== */
+
+/* 1. Pestañas Superiores (Tabs) */
+.tabs-admin-center { 
+    display: flex; 
+    justify-content: center; 
+    gap: 10px; 
+    margin-bottom: 25px; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Borde blanco translúcido */
+    max-width: 900px; 
+    margin-left: auto; 
+    margin-right: auto; 
+}
+
+.tab-btn { 
+    padding: 15px 25px; 
+    border: none; 
+    background: none; 
+    cursor: pointer; 
+    font-weight: bold; 
+    font-size: 1.15rem; 
+    color: rgba(255, 255, 255, 0.5); /* Letras inactivas en gris claro */
+    transition: 0.3s;
+}
+
+.tab-btn:hover {
+    color: #ffffff;
+}
+
+.tab-btn.active { 
+    background: rgba(255, 255, 255, 0.15); /* Pestaña activa efecto cristal */
+    color: white; 
+    border-radius: 8px 8px 0 0; 
+}
+
+.tab-content { 
+    display: none; 
+}
+
+/* 2. Cuadro de los QR */
+.qr-placeholder { 
+    border: 4px dashed rgba(255, 255, 255, 0.3); /* Borde punteado blanco */
+    border-radius: 15px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    background: rgba(0, 0, 0, 0.2); /* Fondo oscuro sutil para que el QR blanco resalte */
+}
+
+/* 3. Tablas de Administrador con Scroll Interno */
+.table-responsive { 
+    background: rgba(255, 255, 255, 0.05); /* Cristal oscuro */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px; 
+    overflow-x: auto; 
+    overflow-y: auto; /* Activa el scroll vertical */
+    max-height: 350px; /* Altura máxima antes de activar la barra */
+    width: 100%; 
+    margin-bottom: 20px; 
+}
+
+.ranking-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    min-width: 400px;
+}
+
+/* Cabecera Fija (Sticky) para que no desaparezca al bajar */
+.ranking-table th { 
+    position: sticky; 
+    top: 0; 
+    z-index: 10; 
+    background: rgba(10, 25, 47, 0.95); /* Color oscuro sólido para que el texto de abajo no se mezcle */
+    color: white; 
+    padding: 18px; 
+    text-align: left; 
+    font-size: 1.1rem; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Sombrita elegante */
+}
+
+.ranking-table td { 
+    padding: 18px; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+    vertical-align: middle; 
+    font-size: 1.1rem; 
+    color: #e0e0e0; 
+}
+
+/* --- Diseño de la barra de desplazamiento modo oscuro --- */
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1); 
+    border-radius: 0 15px 15px 0;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); 
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4); 
+}
+/* ==========================================================================
+   ESTILOS ESPECIALES PARA LA IMPRESORA (SOLO QR) - NO TOCAR
+   ========================================================================== */
+@media print {
+    body.printing * { visibility: hidden; }
+    body.printing .print-target, body.printing .print-target * { visibility: visible; }
+    body.printing .print-target { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 20px; box-shadow: none; border: none; }
+    body.printing .print-target button { display: none !important; }
+}

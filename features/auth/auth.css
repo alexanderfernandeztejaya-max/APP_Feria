@@ -1,0 +1,477 @@
+/* ==========================================
+   DISEÑO MODERNO: SPLIT-SCREEN & GLASSMORPHISM
+   ========================================== */
+
+   .modern-login-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100vw;
+    background-color: #00264d !important; /* Color azul oscuro profundo */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+}
+
+/* --- COLUMNA IZQUIERDA (Formularios) --- */
+.login-form-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    z-index: 10;
+}
+
+/* 2. La tarjeta blanca sólida del centro */
+.modern-form-wrapper {
+    width: 100%;
+    max-width: 440px;
+    background-color: #ffffff !important; /* Blanco sólido como en tu imagen */
+    padding: 2.5rem; 
+    border-radius: 1rem; 
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); /* Sombra para que resalte del fondo oscuro */
+}
+.modern-form-wrapper h1 {
+    font-size: 2.8rem;
+    color: var(--azul-uab, #001f54);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -1px;
+}
+
+.modern-form-wrapper .text-muted {
+    color: #6c757d;
+    margin-bottom: 2.5rem;
+    font-size: 1rem;
+}
+
+/* --- INPUTS DE CRISTAL --- */
+.modern-form .input-group {
+    margin-bottom: 1.2rem;
+}
+
+.modern-form label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.glass-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 31, 84, 0.04);
+    border: 1px solid rgba(0, 31, 84, 0.1);
+    border-radius: 1rem;
+    padding: 0.8rem 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.glass-input-wrapper:focus-within {
+    background: rgba(0, 31, 84, 0.08);
+    border-color: var(--azul-uab, #001f54);
+    box-shadow: 0 0 0 4px rgba(0, 31, 84, 0.08);
+}
+
+.glass-input-wrapper .input-icon {
+    color: #adb5bd;
+    margin-right: 12px;
+}
+
+.glass-input-wrapper input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    font-size: 0.95rem;
+    outline: none;
+    color: #333;
+}
+
+/* --- ACCIONES Y BOTONES --- */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    font-size: 0.85rem;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 500 !important;
+}
+
+.forgot-link {
+    color: var(--azul-visitante, #0056b3);
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.3s;
+}
+
+.forgot-link:hover { opacity: 0.8; text-decoration: underline; }
+
+.btn-modern-login {
+    width: 100%;
+    background: var(--azul-uab, #001f54);
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+}
+
+.btn-modern-login:hover {
+    background: #001538;
+    transform: translateY(-2px);
+}
+
+/* --- SEPARADOR Y BOTONES SECUNDARIOS --- */
+.modern-auth-toggle { margin-top: 2rem; text-align: center; }
+
+.divider {
+    display: block;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #adb5bd;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.divider::before, .divider::after {
+    content: "";
+    position: relative;
+    display: inline-block;
+    width: 50%;
+    height: 1px;
+    vertical-align: middle;
+    background-color: #dee2e6;
+}
+.divider::before { left: -0.5em; margin-left: -50%; }
+.divider::after { left: 0.5em; margin-right: -50%; }
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.btn-outline, .btn-visitor {
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #ced4da;
+    color: #495057;
+}
+.btn-outline:hover { background: #f8f9fa; border-color: #adb5bd; }
+
+.btn-visitor {
+    background: rgba(0, 86, 179, 0.08);
+    border: 1px solid rgba(0, 86, 179, 0.15);
+    color: var(--azul-visitante, #0056b3);
+}
+.btn-visitor:hover { background: rgba(0, 86, 179, 0.15); }
+
+/* 1. Volvemos al diseño de la imagen que ocupa toda la altura */
+.login-image-side {
+    flex: 1.2;
+    position: relative;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Separa los logos arriba y los testimonios abajo */
+    height: 100vh;
+}
+
+/* 2. La imagen se estira COMPLETAMENTE sin bordes curvos */
+.hero-bg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0; /* MAGIA 1: Cero espacio. Se pega por completo a la línea divisoria */
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 !important; /* MAGIA 2: Elimina totalmente las curvas, corte recto y elegante */
+    box-shadow: -15px 0 30px rgba(0,0,0,0.25); /* Sombra suave para separar la imagen del fondo azul */
+    z-index: 1; 
+}
+
+/* 3. Contenedor de los testimonios flotantes abajo */
+.floating-cards-container {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 1rem;
+    padding: 2rem;
+    justify-content: center;
+}
+
+/* 4. NUEVO: Estilos para los logos del Instituto y la Carrera flotando arriba */
+.institutional-logos-overlay {
+    position: absolute; 
+    top: 1.5rem;
+    left: 0.5rem; /* MAGIA: Reducimos esto de 2rem a 0.5rem para pegarlo al límite izquierdo */
+    right: 1.5rem; /* Mantenemos un margen elegante a la derecha */
+    z-index: 10; 
+    display: flex;
+    justify-content: space-between; 
+    align-items: flex-start; 
+}
+
+.overlay-logo {
+    object-fit: contain;
+    filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.6)); 
+    transition: transform 0.3s ease;
+}
+
+/* Control exacto del Logo Izquierdo (UABJB - Rectangular) */
+.institutional-logos-overlay img:first-child {
+    height: 60px; /* MAGIA 2: Lo hacemos más bajito para que recupere su proporción normal */
+}
+
+/* Control exacto del Logo Derecho (IISP - Redondo) */
+.institutional-logos-overlay img:last-child {
+    height: 100px; /* Este lo dejamos grande porque es redondo y se ve genial */
+}
+
+.overlay-logo:hover {
+    transform: scale(1.05); 
+}
+
+.glass-testimonial {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(30, 30, 30, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1.5rem;
+    padding: 1rem 1.2rem;
+    color: white;
+    max-width: 280px;
+}
+
+.glass-testimonial img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.glass-testimonial h4 {
+    margin: 0 0 3px 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.glass-testimonial p {
+    margin: 0;
+    font-size: 0.75rem;
+    opacity: 0.9;
+    line-height: 1.2;
+}
+
+/* --- ANIMACIONES EN CASCADA --- */
+.animate-fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s ease forwards;
+}
+
+.animate-slide-right {
+    opacity: 0;
+    transform: translateX(30px);
+    animation: slideRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }
+.delay-1000 { animation-delay: 1.0s; }
+.delay-1200 { animation-delay: 1.2s; }
+
+@keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideRight {
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* --- RESPONSIVIDAD (Celulares) --- */
+@media (max-width: 992px) {
+    .login-image-side { display: none; } /* Oculta la imagen y testimonios en pantallas pequeñas */
+    .modern-form-wrapper { padding: 0 10px; }
+}
+/* ==========================================================================
+    CONVERSIÓN A GLASSMORFISMO (Para TODOS los formularios externos)
+   ========================================================================== */
+/* 1. MATAR EL SCROLL INTERNO Y EVITAR BORDES EN BLANCO */
+.modern-login-container {
+    height: auto !important;
+    min-height: 100vh;
+    overflow-y: auto !important; 
+    padding: 0 !important; /* MAGIA: Quitamos el borde general en Computadoras */
+}
+
+/* Protegemos los celulares para que el login no se pegue a los bordes */
+@media (max-width: 992px) {
+    .modern-login-container {
+        padding: 40px 20px !important; 
+    }
+}
+
+/* Forzamos al body a estirarse al 100% de la pantalla sin huecos */
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+}
+
+/* 2. Tarjetas de Cristal Ahumado (Tono "Plomo") */
+.modern-form-wrapper,
+.login-card,
+.form-card {
+    background: rgba(200, 210, 220, 0.15) !important; /* Tono plomo/grisáceo translúcido */
+    backdrop-filter: blur(18px) !important; /* Un poco más de desenfoque */
+    -webkit-backdrop-filter: blur(18px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important; /* Borde blanco un poco más marcado */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3) !important; /* Sombra un poco más fuerte */
+    color: #ffffff !important;
+}
+
+/* 3. Textos blancos para contrastar */
+.modern-form-wrapper h1, .modern-form-wrapper h2, .modern-form-wrapper h3, .modern-form-wrapper p, .modern-form-wrapper .text-muted, .modern-form-wrapper label,
+.login-card h1, .login-card h2, .login-card h3, .login-card p, .login-card .text-muted, .login-card label,
+.form-card h1, .form-card h2, .form-card h3, .form-card p, .form-card label {
+    color: #ffffff !important;
+}
+
+/*  EXCEPCIÓN: Color rojo para los iconos en los títulos */
+.modern-form-wrapper h1 i, .modern-form-wrapper h2 i,
+.login-card h1 i, .login-card h2 i,
+.form-card h1 i, .form-card h2 i {
+    color: var(--rojo-uab, #d32f2f) !important;
+}
+
+/* 4. Inputs de Cristal (Cajas de texto y selectores) */
+.glass-input-wrapper,
+.modern-form-wrapper input, .modern-form-wrapper select,
+.login-card input, .login-card select,
+.form-card input, .form-card select,
+.login-card .bg-light, .login-card .alert-light,
+[readonly], [disabled] {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+}
+
+/* Efecto brillante al hacer clic en los inputs */
+.glass-input-wrapper:focus-within,
+.modern-form-wrapper input:focus, .modern-form-wrapper select:focus,
+.login-card input:focus, .login-card select:focus {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    outline: none !important;
+}
+
+/* 5. Ajuste de iconos grises en inputs y textos de relleno (Placeholder) */
+.glass-input-wrapper .input-icon, .login-card i.text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.glass-input-wrapper input::placeholder,
+.modern-form-wrapper input::placeholder,
+.login-card input::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* 6. Arreglo para los botones secundarios (ej. "Volver al Login") */
+.btn-outline, .btn-visitor, .btn-light, .btn-outline-secondary {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+.btn-outline:hover, .btn-visitor:hover, .btn-light:hover, .btn-outline-secondary:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+}
+
+/* 7. Ajuste para el botón rojo de Habilitación */
+.btn-danger {
+    background-color: var(--rojo-uab, #d32f2f) !important;
+    border: none !important;
+    color: white !important;
+}
+.btn-danger:hover {
+    background-color: #b71c1c !important;
+}
+
+/* 8. 🌟 CORRECCIÓN ENLACES: "¿Olvidaste tu contraseña?" */
+.forgot-link, 
+.login-card a {
+    color: #4db8ff !important; /* Celeste brillante para que destaque perfectamente */
+    text-decoration: none !important;
+    font-weight: bold !important;
+    transition: 0.3s;
+}
+
+.forgot-link:hover, 
+.login-card a:hover {
+    color: #ffffff !important; /* Se vuelve blanco al pasar el ratón */
+    text-decoration: underline !important;
+}
+/* ==========================================================================
+    PARCHE: QUITAR FONDO BLANCO DE AUTOCOMPLETADO (CHROME/EDGE)
+   ========================================================================== */
+   input:-webkit-autofill,
+   input:-webkit-autofill:hover, 
+   input:-webkit-autofill:focus, 
+   input:-webkit-autofill:active {
+       /* Le inyectamos una sombra azul oscuro sólido para simular el cristal ahumado */
+       -webkit-box-shadow: 0 0 0 30px #1a2a40 inset !important; 
+       -webkit-text-fill-color: #ffffff !important; /* Forzamos la letra blanca */
+       transition: background-color 5000s ease-in-out 0s;
+   }
+/* ==========================================================================
+    PARCHE: QUITAR LA "DOBLE CAJA" EN EL LOGIN
+   ========================================================================== */
+   .glass-input-wrapper input {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.glass-input-wrapper input:focus {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}

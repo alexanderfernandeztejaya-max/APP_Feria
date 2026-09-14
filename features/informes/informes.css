@@ -1,0 +1,106 @@
+/* ==========================================================================
+   📄 MÓDULO DE INFORMES OFICIALES
+   ========================================================================== */
+
+/* 1. Un borde superior elegante para la tarjeta de informes */
+#informes .form-card {
+    border-top: 5px solid var(--azul-uab);
+}
+
+/* 2. Diseño moderno para los selectores (menús desplegables) */
+#informes select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    color: #333;
+    background-color: #f8f9fa; 
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: auto; 
+    /* ESTA ES LA MAGIA QUE ELIMINA LA LÍNEA BLANCA */
+    box-sizing: border-box !important; 
+}
+
+/* 3. Efecto al hacer clic en el selector */
+#informes select:focus {
+    border-color: var(--azul-uab);
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 31, 84, 0.2);
+    background-color: white;
+}
+
+/* 4. Separación extra entre el icono y el texto en el botón */
+#informes .btn-save i {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+/* ==========================================================================
+   5. PARCHE: VISTA PREVIA RESPONSIVA DE INFORMES EN MÓVILES
+   ========================================================================== */
+
+   #informe-impresion {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch; /* Desplazamiento táctil suave */
+}
+
+/* Forzamos a la tabla a no encogerse nunca menos de 750px (Activa el scroll horizontal) */
+#informe-impresion table {
+    min-width: 750px !important;
+    width: 100% !important;
+}
+
+/* Al momento de imprimir en papel, desactivamos el scroll para que salga perfecto */
+@media print {
+    #informe-impresion {
+        overflow-x: visible !important;
+        width: auto !important;
+    }
+    #informe-impresion table {
+        min-width: 100% !important;
+    }
+}
+/* ==========================================================================
+   6. BLINDAJE DE VISTA PREVIA (Evitar conflictos con el Modo Oscuro)
+   ========================================================================== */
+   @media screen {
+    /* 1. Proteger Títulos: Evitar que global.css los vuelva blancos */
+    #informe-impresion h1, 
+    #informe-impresion h2, 
+    #informe-impresion h4,
+    #informe-impresion p {
+        color: #000000 !important;
+        text-shadow: none !important;
+    }
+
+    /* Proteger los H3 según el color exacto que les dimos en JavaScript */
+    #informe-impresion h3 { text-shadow: none !important; }
+    #informe-impresion h3[style*="color: #555"] { color: #555555 !important; }
+    #informe-impresion h3[style*="color: #fff"] { color: #ffffff !important; }
+    #informe-impresion h3[style*="color: #000"] { color: #000000 !important; }
+
+    /* 2. Proteger Tablas: Evitar que las letras desaparezcan al pasar el ratón */
+    #informe-impresion table tbody tr td,
+    #informe-impresion table tbody tr th {
+        color: #000000 !important;
+    }
+
+    /* Al pasar el ratón (Hover) forzamos un resaltado gris clarito y letra negra */
+    #informe-impresion table tbody tr:hover,
+    #informe-impresion table tbody tr:hover td,
+    #informe-impresion table tbody tr:hover th {
+        background-color: #e9ecef !important; 
+        color: #000000 !important; 
+        box-shadow: none !important;
+    }
+
+    /* 3. Respetar los colores azules para correos y nombres de proyectos */
+    #informe-impresion table td[style*="var(--azul-uab)"],
+    #informe-impresion table td[style*="#0056b3"] {
+        color: #003366 !important;
+        font-weight: bold !important;
+    }
+}

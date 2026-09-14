@@ -1,0 +1,82 @@
+/* ==========================================================================
+   ARCHIVO: proyecto.css
+   DISEÑO EXCLUSIVO: GLASSMORFISMO (CRISTAL TRANSLÚCIDO)
+   ========================================================================== */
+
+/* 1. Fondo azul oscuro para el contenedor principal de la página */
+body, .module-section {
+    background-color: var(--azul-secundario) !important;
+    background-image: radial-gradient(circle at top right, rgba(0, 51, 102, 0.8), transparent) !important;
+}
+
+/* 2. Cambiar el título principal exterior ("Mi Proyecto") a color blanco */
+.header-module h2 {
+    color: #ffffff !important;
+}
+
+/* 3. Transformar la tarjeta blanca plana en Cristal Translúcido */
+.form-card {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2) !important;
+    color: #ffffff !important;
+}
+
+/* 4. Ajustar los textos y títulos para que brillen sobre el fondo oscuro */
+.form-card h3 {
+    color: #ffffff !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.form-group label {
+    color: #e0e0e0 !important;
+}
+
+/* 5. Inputs y Selectores convertidos en bloques de cristal */
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+}
+
+/* 6. Efecto de "resplandor" al hacer clic en las cajas para escribir */
+.form-group input:focus, 
+.form-group select:focus, 
+.form-group textarea:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+/* 7. Color de las letras de sugerencia (Placeholder) en tono gris claro */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* 8. Rediseño del recordatorio azul (Alerta) estilo cristal */
+.alert-info {
+    background: rgba(0, 123, 255, 0.15) !important;
+    backdrop-filter: blur(5px) !important;
+    border: 1px solid rgba(0, 123, 255, 0.3) !important;
+    color: #cce5ff !important;
+}
+
+/* 9. Estilo especial para el selector múltiple cuando se despliega */
+.form-group select option {
+    background-color: var(--azul-secundario) !important; /* Para que las opciones no se vean blancas */
+    color: #ffffff !important;
+}
+/* Forzar que todos los textos secundarios dentro del cristal sean blancos */
+.form-card p, 
+.form-card small, 
+.form-card span, 
+.form-card h4, 
+.form-card h5 {
+    color: #e0e0e0 !important;
+}
