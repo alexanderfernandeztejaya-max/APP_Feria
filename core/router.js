@@ -1,20 +1,12 @@
 // =========================================================================
 // ARCHIVO: core/router.js
-// FUNCIÓN: Navegación entre pantallas y aplicación de permisos
 // =========================================================================
 
 window.applyPermissions = function(role, userName) {
-    //  SOLUCIÓN DEL MENÚ: Forzamos a que la barra aparezca y borramos el bloqueo de Modo Público
-    const barrasNav = document.querySelectorAll('.navbar, header, #main-header');
-    barrasNav.forEach(barra => {
-        barra.style.removeProperty('display');
-    });
+    document.querySelectorAll('.navbar, header, #main-header').forEach(barra => { barra.style.removeProperty('display'); });
     const contenidoCentral = document.getElementById('main-content');
-    if (contenidoCentral) {
-        contenidoCentral.style.removeProperty('padding-top');
-    }
+    if (contenidoCentral) contenidoCentral.style.removeProperty('padding-top');
 
-    //  Blindamos cada elemento verificando que exista antes de tocar su '.style'
     const welcomeMsg = document.getElementById('welcome-message');
     if (welcomeMsg) welcomeMsg.innerText = "Bienvenido, " + userName + " — Gestión Digital Tecno Feria";
     
@@ -51,38 +43,36 @@ window.navigate = function(id, el) {
     }
     
     document.querySelectorAll('section').forEach(s => {
-        if(s.id !== 'login-screen') {
-            s.style.display = "none";
-        }
+        if(s.id !== 'login-screen') s.style.display = "none";
     });
     
     const sec = document.getElementById(id);
-    if(sec) {
-        sec.style.display = "block"; 
-    }
+    if(sec) sec.style.display = "block"; 
 
     if(id === 'evaluacion') {
         const inputTribunal = document.querySelector('#panel-tribunal input[type="number"]');
         if(inputTribunal) {
             inputTribunal.setAttribute('min', '0');
             inputTribunal.setAttribute('max', '100');
-            inputTribunal.oninput = function() { 
-                if(typeof validarPuntaje === 'function') validarPuntaje(this, 100); 
-            };
+            inputTribunal.oninput = function() { if(typeof validarPuntaje === 'function') validarPuntaje(this, 100); };
         }
     }
     
     if(id === 'resultados') {
-        if (typeof window.calcularResultadosEnTiempoReal === 'function') {
-            window.calcularResultadosEnTiempoReal();
-        }
+        if (typeof window.calcularResultadosEnTiempoReal === 'function') { window.calcularResultadosEnTiempoReal(); }
+    }
+
+    if(id === 'mi-proyecto') {
+        // 🔥 MAGIA DE PARPADEO: Ocultamos la tarjeta por JS ANTES de llamar a PostgreSQL
+        const formCard = document.querySelector('#mi-proyecto .form-card');
+        if (formCard) formCard.style.display = 'none';
+        
+        if (typeof window.cargarDatosProyecto === 'function') { window.cargarDatosProyecto(); }
     }
 }
 
 window.openTab = function(e, n) {
-    document.querySelectorAll('.tab-content').forEach(c => {
-        c.style.display = "none";
-    });
+    document.querySelectorAll('.tab-content').forEach(c => c.style.display = "none");
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     
     const targetTab = document.getElementById(n);

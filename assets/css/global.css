@@ -1,23 +1,21 @@
-
-
 :root { --azul-uab: #003366;
-        --azul-secundario: #001f3f; 
-        --rojo-uab: #d32f2f; 
-        --azul-visitante: #005f73; 
-        --blanco: #ffffff; 
-        --gris-fondo: #f8f9fa; 
-        --oro: #FFD700; 
-        --plata: #C0C0C0; 
-        --bronce: #CD7F32; }
-        
+    --azul-secundario: #001f3f; 
+    --rojo-uab: #d32f2f; 
+    --azul-visitante: #005f73; 
+    --blanco: #ffffff; 
+    --gris-fondo: #f8f9fa; 
+    --oro: #FFD700; 
+    --plata: #C0C0C0; 
+    --bronce: #CD7F32; }
+    
 
 /* ANIMACIÓN A PRUEBA DE FALLOS: Se ejecuta automáticamente al cambiar a display:block */
 @keyframes fadeInUp { 
-    0% { opacity: 0; transform: translateY(20px); } 
-    100% { opacity: 1; transform: translateY(0); } 
+0% { opacity: 0; transform: translateY(20px); } 
+100% { opacity: 1; transform: translateY(0); } 
 }
 .section-animate { 
-    animation: fadeInUp 0.5s ease-out forwards; 
+animation: fadeInUp 0.5s ease-out forwards; 
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; scroll-behavior: smooth; }
@@ -48,674 +46,294 @@
 .admin-layout { display: flex; justify-content: center; text-align: center; }
 .form-container { width: 100%; max-width: 900px; text-align: left; }
 .text-center { text-align: center; }
-/* ==========================================================================
-   📱 ADAPTACIÓN PARA CELULARES (DISEÑO RESPONSIVO)
-   ========================================================================== */
-   @media screen and (max-width: 768px) {
-    /* 1. Ajuste del Login */
-    .login-card { padding: 25px 20px; width: 95%; margin: 20px auto; }
-    .app-title-login { font-size: 1.4rem; }
-    .btn-login { padding: 15px; font-size: 1.1rem; }
-    
-    /* 2. Ajuste del Menú de Navegación (Navbar) */
-    .navbar { flex-direction: column; padding: 12px 5%; gap: 10px; }
-    .logo { font-size: 0.85rem; text-align: center; }
-    .nav-links { 
-        width: 100%; 
-        overflow-x: auto; /* Permite deslizar los botones a los lados con el dedo */
-        white-space: nowrap; 
-        padding-bottom: 5px; 
-        justify-content: flex-start;
-    }
-    
-    /* 3. Ajuste de Títulos e Imágenes (Inicio) */
-    .hero { 
-        padding-top: 120px; /* Reducimos un poco el espacio superior */
-    } 
-    .main-circle { 
-        width: 90px; /* Logo mucho más pequeño y elegante */
-        height: 90px; 
-        border-width: 3px; 
-        margin-bottom: 10px;
-    }
-    .hero-center-content h1 { 
-        font-size: 2.2rem; /* Título principal reducido */
-        line-height: 1.1;
-        margin-bottom: 10px;
-    }
-    .slogan { 
-        font-size: 0.95rem; /* Eslogan más sutil */
-        margin-bottom: 15px;
-    }
-    .location-box {
-        padding: 10px 15px; /* Caja de ubicación más compacta */
-    }
-    .location-box i {
-        font-size: 1.2rem; /* Icono de mapa más proporcionado */
-    }
-    .location-box p { 
-        font-size: 0.85rem; /* Texto de ubicación más pequeño */
-    }
-    /* 4. Módulos y Formularios */
-    .module-section { padding-top: 140px; padding-left: 4%; padding-right: 4%; }
-    .header-module h2 { font-size: 1.7rem; }
-    .info-card-item { padding: 20px; }
-    .info-card-item h3 { font-size: 1.4rem; }
-    .form-card { padding: 20px 15px; }
-    .form-group label { font-size: 1rem; }
-    .form-group input, .form-group select, .form-group textarea { padding: 12px; font-size: 1rem; }
-    
-    /* 5. Pestañas y Tablas de Admin */
-    .tabs-admin-center { overflow-x: auto; white-space: nowrap; justify-content: flex-start; padding-bottom: 5px; }
-    .tab-btn { padding: 10px 15px; font-size: 1rem; }
-    
-    /* Forzamos que el QR se ponga ARRIBA de la tabla en celulares */
-    #tab-proyectos > div[style] { grid-template-columns: 1fr !important; }
-    
-    .dash-header-verde { font-size: 1.1rem; }
-    .ranking-table th, .ranking-table td { padding: 12px; font-size: 0.95rem; }
+
+/* =========================================
+ANIMACIONES Y TAMAÑOS DEL BANNER (HERO)
+========================================= */
+.hero-3-column-layout {
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 40px;
+}
+/* 🔥 PC: TAMAÑO NORMAL Y ELEGANTE 🔥 */
+.main-circle {
+width: 130px; 
+height: 130px;
+border: 4px solid var(--rojo-uab, #d32f2f);
+background: #fff;
+border-radius: 50%;
+box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+display: flex;
+justify-content: center;
+align-items: center;
+margin: 0 auto;
+}
+.institutional-shield {
+max-width: 85px; 
+max-height: 85px;
+width: auto;
+height: auto;
+object-fit: contain;
 }
 
-/* Teléfonos muy pequeños (iPhone SE, etc.) */
-@media screen and (max-width: 480px) {
-    h1 { font-size: 2.2rem; }
-    .main-circle { width: 110px; height: 110px; }
-    .app-title-login { font-size: 1.25rem; }
+/* =========================================
+LINKS Y EFECTOS PARA LOS LOGOS DEL LOGIN
+========================================= */
+.institutional-logos-overlay {
+display: flex;
+gap: 15px;
+align-items: center;
+position: absolute;
+top: 20px;
+right: 30px;
+z-index: 10;
 }
-/* ==========================================================================
-    ADAPTACIÓN PARA PANTALLA HORIZONTAL (CELULARES ROTADOS)
-   ========================================================================== */
-   @media screen and (max-height: 600px) and (orientation: landscape) {
-    /* 1. Hacemos que la barra se mueva con la página (deja de estar fija tapando todo) */
-    header, #main-header {
-        position: relative !important;
-    }
-    
-    /* 2. Como la barra ya no está flotando, quitamos el espacio extra de arriba */
-    .module-section, .hero {
-        padding-top: 20px !important;
-    }
+.logo-link {
+display: inline-block;
+transition: transform 0.3s ease;
+border-radius: 50%;
+}
+.logo-link:hover {
+transform: scale(1.15) translateY(-5px);
+}
+.overlay-logo {
+border-radius: 50%;
+box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+width: 70px; 
+height: 70px;
+object-fit: cover;
+}
 
-    /* 3. Evitamos que el texto largo del Instituto salte a 5 líneas */
-    .navbar {
-        padding: 5px 2% !important;
-    }
-    .logo {
-        font-size: 0.8rem;
-        white-space: nowrap; /* Obliga a usar una sola línea */
-        overflow: hidden;
-        text-overflow: ellipsis; /* Pone "..." al final si no entra en la pantalla */
-    }
-}
 /* ==========================================================================
-    MENÚ HAMBURGUESA Y BARRA INTELIGENTE
-   ========================================================================== */
-   #main-header {
-    transition: top 0.3s ease-in-out; /* Animación suave al ocultar/mostrar */
+📱 ADAPTACIÓN PARA CELULARES (DISEÑO RESPONSIVO)
+========================================================================== */
+@media screen and (max-width: 768px) {
+.login-card { padding: 25px 20px; width: 95%; margin: 20px auto; }
+.app-title-login { font-size: 1.4rem; }
+.btn-login { padding: 15px; font-size: 1.1rem; }
+
+.navbar { flex-direction: column; padding: 12px 5%; gap: 10px; }
+.logo { font-size: 0.85rem; text-align: center; }
+.nav-links { 
+    width: 100%; 
+    overflow-x: auto; 
+    white-space: nowrap; 
+    padding-bottom: 5px; 
+    justify-content: flex-start;
+}
+
+/* 🔥 CELULAR: TAMAÑO GIGANTE (Mantiene el efecto de tu dibujo) 🔥 */
+.hero { padding-top: 120px; } 
+.hero-3-column-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 30px !important;
+}
+.hero-side-logo {
+    display: flex;
+    justify-content: center;
     width: 100%;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+}
+.main-circle { 
+    width: 250px !important; /* CÍRCULO GIGANTE */
+    height: 250px !important; 
+    border-width: 6px !important; 
+    margin: 0 auto !important;
+    padding: 15px !important;
+}
+.institutional-shield {
+    max-width: 180px !important; /* LOGO GIGANTE */
+    max-height: 180px !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+}
+.hero-center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+.hero-center-content h1.text-floating { 
+    font-size: 3.2rem !important; 
+    line-height: 1.1 !important;
+    margin-bottom: 10px !important;
+}
+.slogan { 
+    font-size: 1.1rem !important; 
+    margin-bottom: 25px !important;
+}
+.location-box {
+    padding: 15px !important; 
+    width: 100% !important;
+    max-width: 350px !important;
+}
+.location-box i { font-size: 1.2rem; }
+.location-box p { font-size: 0.9rem; }
+
+.module-section { padding-top: 140px; padding-left: 4%; padding-right: 4%; }
+.header-module h2 { font-size: 1.7rem; }
+.info-card-item { padding: 20px; }
+.info-card-item h3 { font-size: 1.4rem; }
+.form-card { padding: 20px 15px; }
+.form-group label { font-size: 1rem; }
+.form-group input, .form-group select, .form-group textarea { padding: 12px; font-size: 1rem; }
+
+.tabs-admin-center { overflow-x: auto; white-space: nowrap; justify-content: flex-start; padding-bottom: 5px; }
+.tab-btn { padding: 10px 15px; font-size: 1rem; }
+
+#tab-proyectos > div[style] { grid-template-columns: 1fr !important; }
+
+.dash-header-verde { font-size: 1.1rem; }
+.ranking-table th, .ranking-table td { padding: 12px; font-size: 0.95rem; }
 }
 
-.menu-toggle {
-    display: none; /* Oculto en PC */
-    color: white;
-    font-size: 1.8rem;
-    cursor: pointer;
+@media screen and (max-width: 480px) {
+.hero-center-content h1.text-floating { font-size: 2.6rem !important; }
+.main-circle { width: 220px !important; height: 220px !important; }
+.institutional-shield { max-width: 150px !important; max-height: 150px !important; }
+.app-title-login { font-size: 1.25rem; }
 }
 
-/* Modificaciones exclusivas para celulares y tablets (incluso en horizontal) */
-@media screen and (max-width: 1024px) {
-    .navbar { 
-        flex-direction: row; 
-        justify-content: space-between;
-        align-items: center;
-        position: relative; 
-    }
-    .logo { 
-        font-size: 0.75rem; 
-        text-align: left; 
-        width: 80%; 
-    }
-    .menu-toggle { 
-        display: block; /* Obliga a las 3 rayitas a quedarse visibles */
-    }
-    .nav-links { 
-        display: none !important; /* Oculta los botones normales */
-        flex-direction: column; 
-        position: absolute;
-        top: 100%; 
-        left: 0;
-        width: 100%;
-        background-color: var(--azul-uab);
-        padding: 10px 0;
-        box-shadow: 0 10px 15px rgba(0,0,0,0.3);
-    }
-    .nav-links.active {
-        display: flex !important;
-    }
-    .nav-links li {
-        width: 100%;
-        text-align: center;
-        margin: 5px 0;
-    }
+@media screen and (max-height: 600px) and (orientation: landscape) {
+header, #main-header { position: relative !important; }
+.module-section, .hero { padding-top: 20px !important; }
+.navbar { padding: 5px 2% !important; }
+.logo { font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
+
 /* ==========================================================================
-   🖨️ HOJA DE ESTILOS DE IMPRESIÓN (OCULTA LA WEB Y DEJA SOLO EL INFORME)
-   ========================================================================== */
-   @media print {
-    /* 1. Ocultamos la barra azul, botones, menús, TÍTULOS WEB y el fondo oscuro */
-    header, #main-header, .menu-toggle, .nav-links, .btn-save, .tabs-admin-center, .header-module {
-        display: none !important;
-    }
+MENÚ HAMBURGUESA Y BARRA INTELIGENTE
+========================================================================== */
+#main-header { transition: top 0.3s ease-in-out; width: 100%; position: sticky; top: 0; z-index: 1000; }
+.menu-toggle { display: none; color: white; font-size: 1.8rem; cursor: pointer; }
 
-    /* 2. Forzamos a que el papel sea blanco con letras negras limpias */
-    body {
-        background: white !important;
-        color: black !important;
-    }
-
-    /* 3. Hacemos que la tarjeta del informe ocupe el 100% de la hoja de papel */
-    .container, .form-card {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        box-shadow: none !important;
-        background: transparent !important;
-        border: none !important;
-    }
+@media screen and (max-width: 1024px) {
+.navbar { flex-direction: row; justify-content: space-between; align-items: center; position: relative; }
+.logo { font-size: 0.75rem; text-align: left; width: 80%; }
+.menu-toggle { display: block; }
+.nav-links { 
+    display: none !important; 
+    flex-direction: column; 
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    width: 100%;
+    background-color: var(--azul-uab);
+    padding: 10px 0;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.3);
 }
-/* =========================================
-   ANIMACIONES DEL BANNER (HERO SECTION)
-   ========================================= */
+.nav-links.active { display: flex !important; }
+.nav-links li { width: 100%; text-align: center; margin: 5px 0; }
+}
 
-/* 1. Animación para que las letras floten suavemente */
+/* ==========================================================================
+🖨️ HOJA DE ESTILOS DE IMPRESIÓN 
+========================================================================== */
+@media print {
+header, #main-header, .menu-toggle, .nav-links, .btn-save, .tabs-admin-center, .header-module { display: none !important; }
+body { background: white !important; color: black !important; }
+.container, .form-card {
+    width: 100% !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important;
+    box-shadow: none !important; background: transparent !important; border: none !important;
+}
+}
+
+/* =========================================
+ANIMACIONES GLOBALES
+========================================= */
 @keyframes floatText {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); } 
+0%, 100% { transform: translateY(0); }
+50% { transform: translateY(-10px); } 
 }
-
-/* 2. Animación que combina flotación suave y giro 3D constante (Moneda) */
 @keyframes coinSpinAndFloat {
-    0% { transform: perspective(1000px) translateY(0) rotateY(0deg); }
-    50% { transform: perspective(1000px) translateY(-15px) rotateY(180deg); }
-    100% { transform: perspective(1000px) translateY(0) rotateY(360deg); }
+0% { transform: perspective(1000px) translateY(0) rotateY(0deg); }
+50% { transform: perspective(1000px) translateY(-15px) rotateY(180deg); }
+100% { transform: perspective(1000px) translateY(0) rotateY(360deg); }
 }
+.text-floating { animation: floatText 4s ease-in-out infinite; display: inline-block; }
+.text-floating-delayed { animation: floatText 4s ease-in-out infinite; animation-delay: 1s; display: inline-block; }
 
-/* --- CLASES PARA APLICAR EN EL HTML --- */
-
-/* Clase para los textos del centro */
-.text-floating {
-    animation: floatText 4s ease-in-out infinite;
-    display: inline-block; 
+@keyframes coinSpinOnly {
+0% { transform: perspective(1000px) rotateY(0deg); }
+50% { transform: perspective(1000px) rotateY(180deg); }
+100% { transform: perspective(1000px) rotateY(360deg); }
 }
+.logo-spin-float { animation: coinSpinOnly 12s linear infinite !important; }
 
-/* Clase para los textos del centro con un ligero retraso */
-.text-floating-delayed {
-    animation: floatText 4s ease-in-out infinite;
-    animation-delay: 1s; 
-    display: inline-block;
-}
-
-/* Clase para los logos (AHORA SÍ LLAMA A LA MONEDA) */
-.logo-spin-float {
-    animation: coinSpinAndFloat 12s linear infinite; 
-    transition: all 0.3s ease; 
-}
 /* =========================================
-   SCROLL VERTICAL PARA TABLAS LARGAS
+SCROLL VERTICAL
 ========================================= */
 .scroll-tabla-proyectos {
-    max-height: 250px; /* Altura máxima antes de activar el scroll */
-    overflow-y: auto;  /* Activa el scroll vertical con la rueda del ratón */
-    overflow-x: auto;  
-    border: 1px solid #eee;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    background-color: white;
+max-height: 250px; overflow-y: auto; overflow-x: auto;  
+border: 1px solid #eee; border-radius: 8px; margin-bottom: 25px; background-color: white;
 }
+.scroll-tabla-proyectos table thead th { position: sticky; top: 0; z-index: 10; background-color: var(--azul-uab); color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.scroll-tabla-proyectos::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll-tabla-proyectos::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+.scroll-tabla-proyectos::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+.scroll-tabla-proyectos::-webkit-scrollbar-thumb:hover { background: #555; }
 
-/* Fijar la cabecera para que no se pierda al bajar */
-.scroll-tabla-proyectos table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background-color: var(--azul-uab); /* Fondo azul para la cabecera */
-    color: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Pequeña sombra para separar del contenido */
-}
+.scroll-dash-tabla { max-height: 220px; overflow-y: auto; overflow-x: auto; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
+.scroll-dash-tabla table thead th { position: sticky; top: 0; z-index: 10; background-color: #2c2c2c; color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+.scroll-dash-tabla::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll-dash-tabla::-webkit-scrollbar-track { background: #333; border-radius: 0 0 8px 0; }
+.scroll-dash-tabla::-webkit-scrollbar-thumb { background: #666; border-radius: 4px; }
+.scroll-dash-tabla::-webkit-scrollbar-thumb:hover { background: #888; }
 
-/* Diseño moderno de la barra de desplazamiento (estilo image_f5faa6.png) */
-.scroll-tabla-proyectos::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-.scroll-tabla-proyectos::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-    border-radius: 4px;
-}
-.scroll-tabla-proyectos::-webkit-scrollbar-thumb {
-    background: #888; 
-    border-radius: 4px;
-}
-.scroll-tabla-proyectos::-webkit-scrollbar-thumb:hover {
-    background: #555; 
-}
-/* =========================================
-   SCROLL VERTICAL PARA DASHBOARD OSCURO
-========================================= */
-.scroll-dash-tabla {
-    max-height: 220px; /* Altura máxima antes de hacer scroll */
-    overflow-y: auto;
-    overflow-x: auto;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-}
+.btn-download { display: inline-block; background-color: var(--azul-uab); color: white !important; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease; width: 100%; box-sizing: border-box; border: none; }
+.btn-download:hover { background-color: var(--azul-secundario); color: white !important; }
 
-/* Fijar la cabecera oscura */
-.scroll-dash-tabla table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background-color: #2c2c2c; /* Gris oscuro que combina con el fondo */
-    color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Sombra para resaltar */
-}
-
-/* Diseño de la barra de desplazamiento en modo oscuro */
-.scroll-dash-tabla::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-.scroll-dash-tabla::-webkit-scrollbar-track {
-    background: #333; 
-    border-radius: 0 0 8px 0;
-}
-.scroll-dash-tabla::-webkit-scrollbar-thumb {
-    background: #666; 
-    border-radius: 4px;
-}
-.scroll-dash-tabla::-webkit-scrollbar-thumb:hover {
-    background: #888; 
-}
-
-/* =========================================
-   ESTILO DEL BOTÓN DE DESCARGAR PDF (EVALUACIÓN)
-========================================= */
-.btn-download {
-    display: inline-block;
-    background-color: var(--azul-uab);
-    color: white !important; /* El !important fuerza a que el texto siempre sea blanco */
-    padding: 12px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    text-align: center;
-    transition: all 0.3s ease;
-    width: 100%;
-    box-sizing: border-box;
-    border: none;
-}
-
-.btn-download:hover {
-    background-color: var(--azul-secundario);
-    color: white !important;
-}
 /* ==========================================================================
-    PARCHE DE CORRECCIONES PARA EL MODO OSCURO (GLASSMORFISMO)
-   ========================================================================== */
-
-   @media screen {
-    /* 1. Arreglar el hover de las tablas DE RAÍZ (Anula el cuadro blanco) */
-    table tbody tr:hover,
-    table tbody tr:hover td,
-    table tbody tr:hover th,
-    .table-hover > tbody > tr:hover > * {
-        background-color: rgba(255, 255, 255, 0.15) !important; /* Fondo cristalino suave */
-        box-shadow: inset 0 0 0 9999px transparent !important; /* ESTA ES LA MAGIA: Mata el fondo blanco de Bootstrap */
-        color: #ffffff !important; /* Obliga a las letras a ser blancas */
-    }
-
-    /* Asegurar que el texto base de las tablas sea blanco */
-    .ranking-table tbody tr td,
-    .table-responsive tbody tr td {
-        color: #ffffff !important;
-    }
-
-    /* CORRECCIÓN NOMBRES: Los nombres en negrita ahora serán blancos */
-    .ranking-table td b, 
-    .ranking-table td strong,
-    .table-responsive td b,
-    .table-responsive td strong {
-        color: #ffffff !important;
-    }
-
-    /* 2. CORRECCIÓN NOTAS: Forzar que los puntajes brillen en fondo oscuro */
-    .text-success {
-        color: #00e676 !important; 
-        font-weight: bold !important;
-    }
-    
-    .text-info, 
-    .text-primary,
-    .ranking-table td span,
-    .table-responsive td span {
-        color: #4db8ff !important; 
-        font-weight: bold !important;
-    }
-
-    /* 3. Títulos de categorías en color blanco */
-    .module-section > h3,
-    .dashboard-oscuro h3,
-    .admin-layout h3,
-    .form-container h3,
-    h3 {
-        color: #ffffff !important;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
-    }
-}
-/* ==========================================================================
-   📱 PARCHE DEFINITIVO PARA MÓVILES: ELIMINAR ESPACIOS BLANCOS LATERALES
-   ========================================================================== */
-
-/* 1. Forzar a TODO el documento a no permitir el deslizamiento horizontal */
-html, body {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden !important; /* MAGIA: Corta cualquier cosa que se salga de la pantalla */
-    margin: 0 !important;
-    padding: 0 !important;
+PARCHE DE CORRECCIONES MODO OSCURO
+========================================================================== */
+@media screen {
+table tbody tr:hover, table tbody tr:hover td, table tbody tr:hover th, .table-hover > tbody > tr:hover > * { background-color: rgba(255, 255, 255, 0.15) !important; box-shadow: inset 0 0 0 9999px transparent !important; color: #ffffff !important; }
+.ranking-table tbody tr td, .table-responsive tbody tr td { color: #ffffff !important; }
+.ranking-table td b, .ranking-table td strong, .table-responsive td b, .table-responsive td strong { color: #ffffff !important; }
+.text-success { color: #00e676 !important; font-weight: bold !important; }
+.text-info, .text-primary, .ranking-table td span, .table-responsive td span { color: #4db8ff !important; font-weight: bold !important; }
+.module-section > h3, .dashboard-oscuro h3, .admin-layout h3, .form-container h3, h3 { color: #ffffff !important; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 }
 
-/* 2. Corregir contenedores principales que causaban el desbordamiento */
-.modern-login-container, 
-.hero, 
-.module-section {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important; /* Obliga a que el padding se calcule hacia adentro */
-}
+html, body { width: 100%; max-width: 100%; overflow-x: hidden !important; margin: 0 !important; padding: 0 !important; }
+.modern-login-container, .hero, .module-section { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; }
+.modern-form-wrapper, .login-card, .form-card, .hero-scroll-container { max-width: 100% !important; box-sizing: border-box !important; }
 
-/* 3. Asegurar que las tarjetas de cristal no empujen la pantalla en móviles */
-.modern-form-wrapper, 
-.login-card, 
-.form-card, 
-.hero-scroll-container {
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-}
-/* ==========================================================
-    PARCHE DEFINITIVO: MENÚ FIJO (NUNCA SE OCULTA)
-   ========================================================== */
-   .navbar, header, #main-header {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    z-index: 999999 !important;
-    transform: translateY(0) !important; /* Bloquea cualquier script que intente esconderlo */
-}
+.navbar, header, #main-header { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; z-index: 999999 !important; transform: translateY(0) !important; }
+.fade-scroll { opacity: 0 !important; transform: translateY(50px) scale(0.95) !important; transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1) !important; will-change: opacity, transform; }
+.fade-scroll.is-visible { opacity: 1 !important; transform: translateY(0) scale(1) !important; }
 
-/* ==========================================================
-    PARCHE DEFINITIVO: ANIMACIÓN SUAVE (NO DE GOLPE)
-   ========================================================== */
-.fade-scroll {
-    opacity: 0 !important;
-    transform: translateY(50px) scale(0.95) !important;
-    /* El !important obliga al navegador a respetar la duración de 0.8 segundos SIEMPRE */
-    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1) !important;
-    will-change: opacity, transform;
-}
+#main-content h1, #main-content h2, #main-content h3, .form-card h1, .form-card h2, .form-card h3, header h1, header h2, header h3 { color: #ffffff !important; text-shadow: none !important; }
+div[id*="votar"] h1, div[id*="votar"] h2, div[id*="votacion"] h1, div[id*="votacion"] h2, div[class*="votar"] h1, div[class*="votar"] h2, div[class*="votacion"] h1, div[class*="votacion"] h2, form[id*="vot"] h1, form[id*="vot"] h2, div[style*="background: white"] h1, div[style*="background: #fff"] h1, div[style*="background-color: white"] h1, div[style*="background-color: #fff"] h1 { color: var(--rojo-uab, #d32f2f) !important; }
+div[id*="votar"] h1 i, div[class*="votar"] h1 i, div[id*="votacion"] h1 i, div[class*="votacion"] h1 i, div[style*="background: white"] h1 i, div[style*="background-color: white"] h1 i { color: var(--rojo-uab, #d32f2f) !important; }
 
-.fade-scroll.is-visible {
-    opacity: 1 !important;
-    transform: translateY(0) scale(1) !important; /* Vuelve a su lugar suavemente */
-}
-/* ==========================================================
-    CORRECCIÓN: RESTAURAR BLANCO EN SISTEMA Y ROJO EN VOTO
-   ========================================================== */
+#main-content .btn-outline, #main-content .btn-secondary, #main-content .btn-light, #main-content a[href*="login"], #main-content a[href*="inicio"], #main-content button[onclick*="login"], #main-content button[onclick*="inicio"], .form-card button:last-of-type, .form-card a:last-of-type { background-color: #0056b3 !important; color: #ffffff !important; border: none !important; padding: 14px 20px !important; border-radius: 8px !important; font-weight: bold !important; font-size: 1.1rem !important; text-align: center !important; display: block !important; width: 100% !important; margin-top: 15px !important; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15) !important; transition: all 0.2s ease-in-out !important; text-decoration: none !important; cursor: pointer !important; }
+#main-content .btn-outline:hover, #main-content .btn-secondary:hover, #main-content .btn-light:hover, #main-content button:last-of-type:hover, .form-card button:last-of-type:hover, .form-card a:last-of-type:hover { background-color: #004a99 !important; color: #ffffff !important; transform: translateY(-2px) !important; box-shadow: 0 6px 14px rgba(0, 86, 179, 0.35) !important; }
 
-/* 1. RESTAURAR AL BLANCO NÍTIDO TODOS LOS TÍTULOS DEL SISTEMA GENERAL */
-/* Devolvemos el color blanco original a "TECNO FERIA", "Mi Proyecto", "Registro y Adm.", etc. */
-#main-content h1, 
-#main-content h2, 
-#main-content h3, 
-.form-card h1, 
-.form-card h2, 
-.form-card h3,
-header h1, 
-header h2, 
-header h3 {
-    color: #ffffff !important;
-    text-shadow: none !important;
-}
+button:disabled, button[disabled], input[type="submit"]:disabled, .btn:disabled, .btn.disabled, #main-content button:disabled, .form-card button:disabled, div[class*="vot"] button:disabled { background-color: #004a99 !important; color: #ffffff !important; border: 1px solid #003366 !important; opacity: 0.95 !important; visibility: visible !important; display: block !important; width: 100% !important; cursor: not-allowed !important; box-shadow: none !important; transform: none !important; }
+button:disabled i, button[disabled] i, .btn:disabled i, .form-card button:disabled i { color: #ffffff !important; display: inline-block !important; margin-right: 8px !important; visibility: visible !important; opacity: 1 !important; }
 
-/* 2. EXCEPCIÓN QUIRÚRGICA: ROJO SÓLO EN LA TARJETA DE VOTACIÓN PÚBLICA */
-/* Usamos palabras exactas ("votar" y "votacion") y tarjetas blancas para no tocar el panel de administración */
-div[id*="votar"] h1, div[id*="votar"] h2,
-div[id*="votacion"] h1, div[id*="votacion"] h2,
-div[class*="votar"] h1, div[class*="votar"] h2,
-div[class*="votacion"] h1, div[class*="votacion"] h2,
-form[id*="vot"] h1, form[id*="vot"] h2,
-div[style*="background: white"] h1,
-div[style*="background: #fff"] h1,
-div[style*="background-color: white"] h1,
-div[style*="background-color: #fff"] h1 {
-    color: var(--rojo-uab, #d32f2f) !important;
-}
+#main-content table button, #main-content table a, #main-content table .btn, #main-content td button, #main-content td a, #main-content td .btn, .form-card table button, .form-card table a, .form-card td button, .form-card td a, div[class*="table"] button, div[class*="table"] a, tr button, tr a { display: inline-block !important; width: auto !important; min-width: 85px !important; max-width: 125px !important; padding: 6px 12px !important; font-size: 0.85rem !important; font-weight: bold !important; margin: 3px 4px !important; border-radius: 6px !important; line-height: 1.2 !important; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important; text-align: center !important; vertical-align: middle !important; }
+#main-content table button i, #main-content table a i, #main-content td button i, #main-content td a i, tr button i, tr a i { display: inline !important; margin-right: 5px !important; margin-bottom: 0px !important; font-size: 0.85rem !important; }
+#main-content button[onclick*="ctualizar"], #main-content button[onclick*="load"], .form-card button[onclick*="ctualizar"], button[onclick*="window.cargar"] { display: inline-block !important; width: auto !important; min-width: 160px !important; max-width: 240px !important; padding: 8px 18px !important; font-size: 0.95rem !important; margin-bottom: 15px !important; }
 
-/* Ícono del celular dentro del título de votación también en rojo */
-div[id*="votar"] h1 i, div[class*="votar"] h1 i,
-div[id*="votacion"] h1 i, div[class*="votacion"] h1 i,
-div[style*="background: white"] h1 i,
-div[style*="background-color: white"] h1 i {
-    color: var(--rojo-uab, #d32f2f) !important;
-}
-/* ==========================================================
-   2. BOTÓN "Volver al Login / Inicio" IGUAL AL DE CONFIRMAR
-   ========================================================== */
-/* Usamos el azul brillante exacto del botón de Confirmar Voto (#0056b3) para que sean gemelos */
-#main-content .btn-outline,
-#main-content .btn-secondary,
-#main-content .btn-light,
-#main-content a[href*="login"],
-#main-content a[href*="inicio"],
-#main-content button[onclick*="login"],
-#main-content button[onclick*="inicio"],
-.form-card button:last-of-type,
-.form-card a:last-of-type {
-    background-color: #0056b3 !important; /* Azul vibrante idéntico al botón principal */
-    color: #ffffff !important;
-    border: none !important;
-    padding: 14px 20px !important;
-    border-radius: 8px !important;
-    font-weight: bold !important;
-    font-size: 1.1rem !important;
-    text-align: center !important;
-    display: block !important;
-    width: 100% !important;
-    margin-top: 15px !important;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15) !important;
-    transition: all 0.2s ease-in-out !important;
-    text-decoration: none !important;
-    cursor: pointer !important;
-}
+.logo { display: flex !important; align-items: center !important; gap: 18px !important; max-width: 700px !important; }
+.logo-nav { width: 85px !important; height: auto !important; border-radius: 50% !important; box-shadow: 0 4px 8px rgba(0,0,0,0.4) !important; flex-shrink: 0 !important; background-color: white !important; }
 
-/* Al pasar el ratón o tocar (hover), se ilumina suavemente con el MISMO azul, sin ponerse negro ni oscuro */
-#main-content .btn-outline:hover,
-#main-content .btn-secondary:hover,
-#main-content .btn-light:hover,
-#main-content button:last-of-type:hover,
-.form-card button:last-of-type:hover,
-.form-card a:last-of-type:hover {
-    background-color: #004a99 !important; /* Un tono apenas más realzado, mantiene la viveza */
-    color: #ffffff !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 14px rgba(0, 86, 179, 0.35) !important; /* Sombra azulada elegante */
-}
-/* ==========================================================
-   3. BLINDAJE VISUAL: ESTADO DE CARGA Y VERIFICACIÓN (:disabled)
-   ========================================================== */
-/* Cuando el JS deshabilita el botón para verificar GPS o base de datos,
-   evitamos que el navegador lo vuelva blanco, transparente o invisible */
-   button:disabled,
-   button[disabled],
-   input[type="submit"]:disabled,
-   .btn:disabled,
-   .btn.disabled,
-   #main-content button:disabled,
-   .form-card button:disabled,
-   div[class*="vot"] button:disabled {
-       background-color: #004a99 !important; /* Mantiene un fondo azul sólido y elegante */
-       color: #ffffff !important; /* Letras y spinner en blanco nítido */
-       border: 1px solid #003366 !important;
-       opacity: 0.95 !important; /* Evita que Bootstrap lo vuelva transparente */
-       visibility: visible !important; /* Garantiza que no desaparezca jamás */
-       display: block !important;
-       width: 100% !important;
-       cursor: not-allowed !important;
-       box-shadow: none !important;
-       transform: none !important;
-   }
-   
-   /* Aseguramos que el ícono giratorio de carga (spinner) resalte con brillo */
-   button:disabled i,
-   button[disabled] i,
-   .btn:disabled i,
-   .form-card button:disabled i {
-       color: #ffffff !important;
-       display: inline-block !important;
-       margin-right: 8px !important;
-       visibility: visible !important;
-       opacity: 1 !important;
-   }
-/* ==========================================================
-   4. CORRECCIÓN DEFINITIVA: BLINDAJE DE BOTONES EN TABLAS
-   ========================================================== */
-/* Usamos #main-content y .form-card para ganarle en especificidad al botón gigante de login */
-#main-content table button,
-#main-content table a,
-#main-content table .btn,
-#main-content td button,
-#main-content td a,
-#main-content td .btn,
-.form-card table button,
-.form-card table a,
-.form-card td button,
-.form-card td a,
-div[class*="table"] button,
-div[class*="table"] a,
-tr button,
-tr a {
-    display: inline-block !important; /*  ROMPE EL BLOQUE GIGANTE DE 100% */
-    width: auto !important; /* Regresa al ancho natural de las letras */
-    min-width: 85px !important;
-    max-width: 125px !important;
-    padding: 6px 12px !important;
-    font-size: 0.85rem !important;
-    font-weight: bold !important;
-    margin: 3px 4px !important;
-    border-radius: 6px !important;
-    line-height: 1.2 !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
-    text-align: center !important;
-    vertical-align: middle !important;
-}
-
-/* Alineación exacta para que los íconos (QR, PDF, Basurero) queden al lado de las letras */
-#main-content table button i,
-#main-content table a i,
-#main-content td button i,
-#main-content td a i,
-tr button i,
-tr a i {
-    display: inline !important;
-    margin-right: 5px !important;
-    margin-bottom: 0px !important;
-    font-size: 0.85rem !important;
-}
-
-/* BOTONES DE ACTUALIZAR (Para que queden de tamaño normal y elegantes arriba de las tablas) */
-#main-content button[onclick*="ctualizar"],
-#main-content button[onclick*="load"],
-.form-card button[onclick*="ctualizar"],
-button[onclick*="window.cargar"] {
-    display: inline-block !important;
-    width: auto !important;
-    min-width: 160px !important;
-    max-width: 240px !important;
-    padding: 8px 18px !important;
-    font-size: 0.95rem !important;
-    margin-bottom: 15px !important;
-}
-/* ==========================================================
-    NUEVO LOGO ACREDITADA EN LA BARRA DE NAVEGACIÓN
-   ========================================================== */
-   .logo {
-    display: flex !important;
-    align-items: center !important;
-    gap: 18px !important; /* Un poquito más de separación */
-    max-width: 700px !important; /* Más espacio para que quepa todo */
-}
-
-.logo-nav {
-    width: 85px !important; /*  AQUÍ LO HACEMOS MUCHO MÁS GRANDE (Antes 55px) */
-    height: auto !important;
-    border-radius: 50% !important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.4) !important; /* Sombra un poco más fuerte */
-    flex-shrink: 0 !important; 
-    background-color: white !important; 
-}
-
-/* Ajuste automático para celulares */
 @media screen and (max-width: 768px) {
-    .logo-nav {
-        width: 55px !important; /* En celular también lo hacemos más grande (Antes 38px) */
-    }
-    .logo {
-        gap: 10px !important;
-    }
-}
-/* ==========================================================
-    PARCHE: ESPACIADO PARA EL NUEVO LOGO GIGANTE
-   ========================================================== */
-/* Empujamos todos los módulos más abajo para que la barra no tape los títulos */
-.module-section {
-    padding-top: 150px !important; /* Aumentamos el espacio superior en PC */
+.logo-nav { width: 55px !important; }
+.logo { gap: 10px !important; }
+.module-section { padding-top: 170px !important; }
+.hero { padding-top: 150px !important;  }
 }
 
-/* Ajuste preventivo para la pantalla de inicio */
-.hero {
-    padding-top: 130px !important;
-}
+.module-section { padding-top: 150px !important; }
+.hero { padding-top: 130px !important; }
 
-/* Ajuste automático para celulares (donde la barra ocupa más espacio) */
-@media screen and (max-width: 768px) {
-    .module-section {
-        padding-top: 170px !important;
-    }
-    .hero {
-        padding-top: 150px !important; 
-    }
-}
-/* ==========================================================
-    BLINDAJE DE PESTAÑAS DEL ADMINISTRADOR (TAMAÑO UNIFORME)
-   ========================================================== */
-   .tabs-admin-center .tab-btn {
-    font-size: 1.1rem !important; /* Tamaño de letra exactamente igual para todos */
-    padding: 12px 20px !important; /* Espaciado uniforme */
-    margin-bottom: 0 !important; /* Evita desniveles entre los botones */
-    min-width: auto !important; 
-    height: auto !important;
-    vertical-align: middle !important;
-}
-
-/* Ajuste automático para que no se deformen en celulares */
-@media screen and (max-width: 768px) {
-    .tabs-admin-center .tab-btn {
-        font-size: 0.95rem !important;
-        padding: 10px 15px !important;
-    }
-}
+.tabs-admin-center .tab-btn { font-size: 1.1rem !important; padding: 12px 20px !important; margin-bottom: 0 !important; min-width: auto !important; height: auto !important; vertical-align: middle !important; }
+@media screen and (max-width: 768px) { .tabs-admin-center .tab-btn { font-size: 0.95rem !important; padding: 10px 15px !important; } }

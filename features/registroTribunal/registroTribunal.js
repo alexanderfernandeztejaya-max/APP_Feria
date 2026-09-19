@@ -1,6 +1,6 @@
 // =========================================================================
 // ARCHIVO: features/registroTribunal/registroTribunal.js
-// FUNCIÓN: Migrado a PostgreSQL (Mantiene Firebase Auth y EmailJS)
+// FUNCIÓN: Migrado a PostgreSQL con Encriptación
 // =========================================================================
 
 window.registrarNuevoTribunal = async function(e) {
@@ -17,7 +17,6 @@ window.registrarNuevoTribunal = async function(e) {
     const btn = document.getElementById('btnGuardarTribunal');
     const textoOriginal = btn.innerHTML;
     
-    //  Capturamos si evalúa TODOS o ESPECÍFICOS
     let arrayProyectosAsignados = "TODOS";
     let textoProyectosParaCorreo = "⚡ TODOS LOS PROYECTOS DE LA CATEGORÍA";
 
@@ -39,26 +38,14 @@ window.registrarNuevoTribunal = async function(e) {
     btn.disabled = true;
 
     try {
-        // 1. CREAR CUENTA EN FIREBASE AUTH (App Secundaria)
-        const { getAuth, createUserWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js");
-        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js");
-
-        // Creamos una app temporal única para evitar errores de choque en registros seguidos
-        const appSecundaria = initializeApp(window.auth.app.options, "AppSecundaria_Tribunales_" + Date.now());
-        const authSecundario = getAuth(appSecundaria);
-
-        const userCredential = await createUserWithEmailAndPassword(authSecundario, correo, password);
-        await authSecundario.signOut(); 
-
-        // 2. GUARDAR EN POSTGRESQL (Enviamos los datos al nuevo puente de Node.js) (Ruta Relativa)
         const payload = {
             usuario: usuario,
             nombre: nombre,
             especialidad: especialidad,
             categoria: categoriaValor,
-            // Si es un arreglo (Específicos), lo pasamos a texto, si es "TODOS" pasa directo
             proyectosAsignados: typeof arrayProyectosAsignados === 'string' ? arrayProyectosAsignados : JSON.stringify(arrayProyectosAsignados),
-            correo: correo
+            correo: correo,
+            password: password 
         };
 
         const respuesta = await fetch('/api/tribunales', {
@@ -69,10 +56,9 @@ window.registrarNuevoTribunal = async function(e) {
 
         if (!respuesta.ok) {
             const errorData = await respuesta.json();
-            throw new Error(errorData.error || "Error al guardar los datos del tribunal en PostgreSQL.");
+            throw new Error(errorData.error || "Error al guardar los datos del tribunal.");
         }
 
-        // 3. ENVIAR CORREO (Se mantiene idéntico a tu configuración original)
         console.log("Enviando correo automático a:", correo);
         const serviceID = "service_m4ueyce"; 
         const templateID = "template_c8zd2xj";
@@ -105,13 +91,9 @@ window.registrarNuevoTribunal = async function(e) {
 
     } catch (error) {
         console.error("Error al registrar tribunal:", error);
-        if (error.code === 'auth/email-already-in-use') {
-            alert("⚠️ Error: Ese correo electrónico ya está registrado en el sistema.");
-        } else {
-            alert("❌ Ocurrió un error: " + error.message);
-        }
+        alert("❌ Ocurrió un error: " + error.message);
     } finally {
         btn.innerHTML = textoOriginal;
         btn.disabled = false;
     }
-};
+}; 

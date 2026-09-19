@@ -3,7 +3,6 @@
 // FUNCIÓN: Módulo de Tribunales conectado a PostgreSQL
 // =========================================================================
 
-// 1. Cargar los proyectos en el select (FILTRADOS POR CATEGORÍA Y ASIGNACIÓN)
 window.cargarProyectosParaEvaluar = async function() {
     const select = document.getElementById('eval-select-proyecto');
     const btnDoc = document.getElementById('eval-btn-doc');
@@ -12,11 +11,12 @@ window.cargarProyectosParaEvaluar = async function() {
     select.innerHTML = '<option value="" disabled selected>Buscando proyectos asignados a su perfil...</option>';
     
     try {
-        const usuarioActual = window.auth.currentUser;
-        if (!usuarioActual) return;
+        const correoTribunal = localStorage.getItem("feria_correo");
+        if (!correoTribunal) { 
+            select.innerHTML = '<option value="" disabled selected>Sesión inválida</option>'; return; 
+        }
 
-        // A) Buscar qué categoría y proyectos le tocan a este tribunal en PostgreSQL
-        const resTribunal = await fetch(`/api/tribunal_correo/${usuarioActual.email}`);
+        const resTribunal = await fetch(`/api/tribunal_correo/${correoTribunal}`);
         const datosTribunal = await resTribunal.json();
         
         if (!datosTribunal) {
@@ -34,7 +34,6 @@ window.cargarProyectosParaEvaluar = async function() {
             try { proyectosAsignadosArray = JSON.parse(datosTribunal.proyectos_asignados); } catch(e){}
         }
 
-        // B) Pedimos todos los proyectos al servidor
         const resProyectos = await fetch('/api/proyectos_admin');
         const todosLosProyectos = await resProyectos.json();
 
@@ -42,10 +41,7 @@ window.cargarProyectosParaEvaluar = async function() {
         let proyectosEncontrados = 0;
 
         todosLosProyectos.forEach(p => {
-            // Filtro 1: Que sea de su categoría
             if (palabraClaveCategoria !== "" && !p.categoria.includes(palabraClaveCategoria)) return;
-            
-            // Filtro 2: Si tiene proyectos específicos, que esté en su lista
             if (Array.isArray(proyectosAsignadosArray) && !proyectosAsignadosArray.includes(String(p.id))) return;
 
             opcionesHTML += `<option value="${p.id}" data-url="${p.enlace_pdf || ''}">${p.titulo}</option>`;
@@ -58,7 +54,6 @@ window.cargarProyectosParaEvaluar = async function() {
             select.innerHTML = opcionesHTML;
         }
 
-        // C) Visor de PDF Dinámico
         select.addEventListener('change', function() {
             const opcionSeleccionada = this.options[this.selectedIndex];
             const url = opcionSeleccionada.getAttribute('data-url');
@@ -82,7 +77,6 @@ window.cargarProyectosParaEvaluar = async function() {
     }
 };
 
-// 2. Guardar la calificación y BLOQUEAR DOBLE VOTO
 window.guardarEvaluacionTribunal = async function(e) {
     e.preventDefault();
     
@@ -106,18 +100,16 @@ window.guardarEvaluacionTribunal = async function(e) {
     btn.disabled = true;
 
     try {
-        const usuario = window.auth.currentUser;
+        const correo = localStorage.getItem("feria_correo");
         const nombreLocal = localStorage.getItem("feria_nombre") || "Ing. Evaluador";
-        const nombreReal = nombreLocal.split(" (")[0]; // Para quitarle el "(Tribunal)"
+        const nombreReal = nombreLocal.split(" (")[0]; 
 
-        // Enviamos la evaluación a PostgreSQL
         const respuesta = await fetch('/api/evaluar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 idProyecto: select.value,
-                correoTribunal: usuario.email,
-                nombreTribunal: nombreReal,
+                correoTribunal: correo,
                 notaTribunal: nota,
                 observaciones: observaciones || "El tribunal no dejó comentarios adicionales."
             })
@@ -130,7 +122,6 @@ window.guardarEvaluacionTribunal = async function(e) {
             btn.innerHTML = textoOriginal; btn.disabled = false; return;
         }
 
-        // --- Enviar Correo con EmailJS ---
         let mensajeCorreo = "";
         if (dataRespuesta.estado === "Pre-seleccionado") {
             mensajeCorreo = `¡Felicidades! Su proyecto "${dataRespuesta.tituloProyecto}" ha sido evaluado.\nObtuvo ${nota}/100 puntos brutos (${dataRespuesta.notaPonderada}/60 ponderados).\n\n📝 Retroalimentación:\n"${observaciones}"\n\n¡Ha superado la etapa de Pre-selección!`;
@@ -165,7 +156,6 @@ window.guardarEvaluacionTribunal = async function(e) {
     }
 };
 
-// 3. Escudos visuales
 document.addEventListener('DOMContentLoaded', () => {
     const inputNotaTribunal = document.getElementById('eval-nota');
     if (inputNotaTribunal) {

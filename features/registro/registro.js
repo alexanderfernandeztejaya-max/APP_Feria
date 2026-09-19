@@ -1,6 +1,6 @@
 // =========================================================================
 // ARCHIVO: features/registro/registro.js
-// FUNCIÓN: Registro de expositores Híbrido (Firebase Auth + PostgreSQL)
+// FUNCIÓN: Registro de expositores a PostgreSQL
 // =========================================================================
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -30,7 +30,6 @@ window.handleRegister = async function(e) {
     btn.disabled = true;
 
     try {
-        //  PREGUNTAR FECHA AL SERVIDOR EN TIEMPO REAL
         const resConf = await fetch('/api/configuraciones');
         const dataConf = await resConf.json();
         const FECHA_LIMITE_REGISTRO = new Date(dataConf.fecha_registro);
@@ -47,33 +46,26 @@ window.handleRegister = async function(e) {
         const email = document.getElementById('regEmail').value.trim();
         const phone = document.getElementById('regPhone').value.trim();
         const pass = document.getElementById('regPass').value;
-
-        // 1. Crear usuario para Login (Mantenemos Firebase Auth)
-        const userCredential = await window.createUserWithEmailAndPassword(window.auth, email, pass);
         
-        // 2. Enviar datos a PostgreSQL
         const res = await fetch('/api/expositores', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ci, nombreCompleto: name, institucion: institution, correo: email, celular: phone })
+            body: JSON.stringify({ ci, nombreCompleto: name, institucion: institution, correo: email, celular: phone, password: pass })
         });
 
-        if (!res.ok) throw new Error("Error guardando datos en PostgreSQL");
+        if (!res.ok) throw new Error("Error guardando datos o el C.I. ya existe en el sistema.");
 
-        alert("✅ ¡Cuenta de expositor creada exitosamente!");
+        alert("✅ ¡Cuenta de expositor creada exitosamente!\n\nPor favor, inicie sesión con su Carnet de Identidad y la contraseña que acaba de crear.");
 
-        document.getElementById('login-screen').style.display = "none";
-        document.getElementById('main-content').style.display = "block";
-        document.body.classList.remove('login-active');
-        
-        if (typeof window.applyPermissions === 'function') {
-            window.applyPermissions("EXPOSITOR", name + " (Expositor)");
-        }
+        // 🔥 NUEVO: Limpiar la URL para evitar el bucle al recargar
+        window.history.replaceState({}, document.title, window.location.pathname);
+
+        e.target.reset();
+        window.toggleAuthMode(null, 'login');
+
     } catch (error) {
         console.error("Error técnico al registrar:", error);
-        if (error.code === 'auth/email-already-in-use') alert("⚠️ Este correo ya está registrado.");
-        else if (error.code === 'auth/weak-password') alert("⚠️ La contraseña es muy débil.");
-        else alert("❌ Ocurrió un error: " + error.message);
+        alert("❌ Ocurrió un error: " + error.message);
     } finally {
         if (btn) { btn.innerHTML = textoOriginal; btn.disabled = false; }
     }

@@ -1,274 +1,245 @@
 // =========================================================================
 // ARCHIVO: features/resultados/resultados.js
-// FUNCIÓN: Gráficos, Ranking y Filtro Inteligente ESTRICTO
 // =========================================================================
 
-window.graficoEstudiantes = null;
-window.graficoDocentes = null;
-window.graficoEmprendimientos = null;
+let chartEstudiante = null;
+let chartDocente = null;
+let chartEmprendimiento = null;
 
 window.calcularResultadosEnTiempoReal = async function() {
-    const rolUsuario = localStorage.getItem("feria_rol") || "VISITANTE";
-    
-    // --- 1. DETERMINAR PERMISOS DE CATEGORÍA ---
-    let categoriaPermitida = "TODAS"; 
-
-    if (window.auth && window.auth.currentUser) {
-        const email = window.auth.currentUser.email;
-        if (rolUsuario === "EXPOSITOR") {
-            try {
-                const res = await fetch(`/api/proyectos/${email}`);
-                const proy = await res.json();
-                if (proy) categoriaPermitida = proy.categoria.toLowerCase();
-            } catch(e) { console.error("Error al buscar categoría expositor:", e); }
-        } else if (rolUsuario === "TRIBUNAL") {
-            try {
-                const res = await fetch(`/api/tribunal_correo/${email}`);
-                const trib = await res.json();
-                if (trib) categoriaPermitida = trib.categoria_asignada.toLowerCase();
-            } catch(e) { console.error("Error al buscar categoría tribunal:", e); }
-        }
-    }
-
-    const esAdminOVisitante = (rolUsuario === "ADMIN" || rolUsuario === "VISITANTE");
-    const verEstudiantes = esAdminOVisitante || categoriaPermitida.includes('estudiante');
-    const verDocentes = esAdminOVisitante || categoriaPermitida.includes('docente');
-    const verEmprendimientos = esAdminOVisitante || categoriaPermitida.includes('emprendimiento');
-
-    const aplicarFiltroVisibilidad = () => {
-        const ocultarRastros = (ids, palabraClave) => {
-            ids.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = 'none';
-            });
-            
-            document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
-                if (h.innerText.toLowerCase().includes(palabraClave)) {
-                    h.style.display = 'none'; 
-                    let nextEl = h.nextElementSibling;
-                    while (nextEl && (nextEl.tagName === 'BR' || nextEl.tagName === 'HR')) {
-                        nextEl.style.display = 'none';
-                        nextEl = nextEl.nextElementSibling;
-                    }
-                    if (nextEl) nextEl.style.display = 'none';
-                }
-            });
-        };
-
-        if (!verEstudiantes) ocultarRastros(['bloque-res-est', 'ranking-estudiantes'], 'estudiante');
-        if (!verDocentes) ocultarRastros(['bloque-res-doc', 'ranking-docentes'], 'docente');
-        if (!verEmprendimientos) ocultarRastros(['bloque-res-emp', 'ranking-emprendimientos'], 'emprendimiento');
-    };
-
-    // --- 2. LÓGICA DE CANDADO DE TIEMPO DINÁMICA ---
-    let FECHA_PUBLICACION_RESULTADOS = new Date("2026-07-22T18:00:00"); 
     try {
         const resConf = await fetch('/api/configuraciones');
-        const dataConf = await resConf.json();
-        FECHA_PUBLICACION_RESULTADOS = new Date(dataConf.fecha_resultados);
-    } catch(e) { console.error("Error obteniendo fechas del servidor"); }
-
-    const ahora = new Date();
-
-    if (ahora < FECHA_PUBLICACION_RESULTADOS && rolUsuario !== "ADMIN") {
-        const btnMasDetalle = document.getElementById('btn-mas-detalle');
-        if (btnMasDetalle) btnMasDetalle.style.display = 'none';
-
-        const tbodiesTop = document.querySelectorAll('#resultados .dash-tabla tbody');
-        const fechaTexto = FECHA_PUBLICACION_RESULTADOS.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-        tbodiesTop.forEach(tbody => {
-            if (tbody) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="2" style="text-align: center; padding: 50px 20px; background: rgba(0,0,0,0.15);">
-                            <i class="fas fa-lock" style="font-size: 3rem; color: #475569; margin-bottom: 15px; display: block;"></i>
-                            <h4 style="color: #f1c40f; margin-bottom: 8px; font-size: 1.1rem;">Etapa de Evaluación en Curso</h4>
-                            <p style="font-size: 0.85rem; color: #94a3b8; margin: 0;">El Ranking Oficial se revelará el:<br><b style="color: #fff;">${fechaTexto}</b></p>
-                        </td>
-                    </tr>
-                `;
-            }
-        });
-
-        if (window.graficoEstudiantes) window.graficoEstudiantes.destroy();
-        if (window.graficoDocentes) window.graficoDocentes.destroy();
-        if (window.graficoEmprendimientos) window.graficoEmprendimientos.destroy();
-
-        aplicarFiltroVisibilidad();
-        return; 
-    }
-
-    const btnMasDetalle = document.getElementById('btn-mas-detalle');
-    if (btnMasDetalle) btnMasDetalle.style.display = 'inline-block';
-
-    try {
-        // --- 3. OBTENER RESULTADOS DESDE POSTGRESQL ---
-        const respuesta = await fetch('/api/resultados');
-        const proyectosBD = await respuesta.json();
-
-        const topEstudiantes = [];
-        const topDocentes = [];
-        const topEmprendimientos = [];
-
-        proyectosBD.forEach(p => {
-            const datosParaTabla = { 
-                titulo: p.titulo, 
-                notaTribunalFinal: p.tribunal_60, 
-                notaPublicoFinal: p.publico_40,   
-                notaFinal: p.nota_final           
-            };
-            if (p.categoria.toLowerCase().includes('estudiante')) topEstudiantes.push(datosParaTabla);
-            else if (p.categoria.toLowerCase().includes('docente')) topDocentes.push(datosParaTabla);
-            else if (p.categoria.toLowerCase().includes('emprendimiento')) topEmprendimientos.push(datosParaTabla);
-        });
-
-        // --- 4. RENDERIZAR TABLAS RESUMEN ---
-        const tbodiesTop = document.querySelectorAll('#resultados .dash-tabla tbody');
+        const conf = await resConf.json();
         
-        const renderizarTop = (tbody, datos) => {
-            if (!tbody) return;
-            tbody.innerHTML = '';
-            if (datos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: #aaa;">Sin proyectos registrados.</td></tr>';
-                return;
+        const fechaResultados = new Date(conf.fecha_resultados);
+        const ahora = new Date();
+        const rolActual = localStorage.getItem("feria_rol") || "";
+
+        const contenedorPrincipal = document.querySelector('#resultados .container');
+        const idsA_Ocultar = ['bloque-res-est', 'bloque-res-doc', 'bloque-res-emp', 'btn-mas-detalle', 'tabla-detalles'];
+
+        let cartelBloqueo = document.getElementById('panel-candado-resultados');
+        if (!cartelBloqueo) {
+            cartelBloqueo = document.createElement('div');
+            cartelBloqueo.id = 'panel-candado-resultados';
+            const headerModulo = document.querySelector('#resultados .header-module');
+            if (headerModulo) headerModulo.insertAdjacentElement('afterend', cartelBloqueo);
+        }
+
+        let alertaAdmin = document.getElementById('alerta-admin-resultados');
+        if (!alertaAdmin) {
+            alertaAdmin = document.createElement('div');
+            alertaAdmin.id = 'alerta-admin-resultados';
+            alertaAdmin.style.cssText = 'background: rgba(255, 193, 7, 0.15); border: 1px solid rgba(255, 193, 7, 0.5); color: #ffc107; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;';
+            cartelBloqueo.insertAdjacentElement('afterend', alertaAdmin);
+        }
+
+        if (!isNaN(fechaResultados.getTime()) && ahora < fechaResultados && rolActual !== "ADMIN") {
+            
+            idsA_Ocultar.forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
+            alertaAdmin.style.display = 'none';
+            
+            if(chartEstudiante) { chartEstudiante.destroy(); chartEstudiante = null; }
+            if(chartDocente) { chartDocente.destroy(); chartDocente = null; }
+            if(chartEmprendimiento) { chartEmprendimiento.destroy(); chartEmprendimiento = null; }
+
+            const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            cartelBloqueo.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px; background: rgba(255, 255, 255, 0.05); border-radius: 15px; border: 2px dashed rgba(255,255,255,0.2); margin-top: 30px; backdrop-filter: blur(10px);">
+                    <i class="fas fa-lock" style="font-size: 5rem; color: #ff6b6b; margin-bottom: 20px;"></i>
+                    <h2 style="color: #ffffff; margin-bottom: 15px;">Ranking Protegido</h2>
+                    <p style="color: #cbd5e1; font-size: 1.1rem; max-width: 500px; margin: 0 auto;">Los proyectos se encuentran en etapa de evaluación. Los resultados oficiales se revelarán automáticamente el:<br>
+                    <strong style="color: #4db8ff; font-size: 1.3rem; display: block; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px;">${fechaResultados.toLocaleDateString('es-ES', opcionesFecha)}</strong></p>
+                </div>`;
+            cartelBloqueo.style.display = 'block';
+            
+            const msgVacio = document.getElementById('mensaje-sin-ranking');
+            if (msgVacio) msgVacio.style.display = 'none';
+
+        } else {
+            cartelBloqueo.style.display = 'none';
+
+            if (rolActual === "ADMIN" && ahora < fechaResultados) {
+                alertaAdmin.innerHTML = '<i class="fas fa-eye"></i> <b>Modo Administrador:</b> Estás monitoreando el ranking. El público general tiene esta pantalla bloqueada.';
+                alertaAdmin.style.display = 'block';
+            } else {
+                alertaAdmin.style.display = 'none';
             }
-            datos.slice(0, 5).forEach(p => {
-                const colorNota = p.notaFinal > 0 ? '#fff' : '#888';
-                tbody.innerHTML += `
-                    <tr>
-                        <td style="color: #ddd;">${p.titulo}</td>
-                        <td style="text-align: center; font-weight: bold; color: ${colorNota}; font-size: 1.1rem;">
-                            ${p.notaFinal.toFixed(2)}
-                        </td>
-                    </tr>`;
-            });
+
+            window.renderizarTablasRanking();
+        }
+    } catch (error) { console.error("Error en resultados:", error); }
+};
+
+window.renderizarTablasRanking = async function() {
+    try {
+        // 🔥 Envía el CI al servidor para demostrar si somos administradores o público
+        const ciFeria = localStorage.getItem("feria_ci") || "publico";
+        const respuesta = await fetch(`/api/resultados?ci=${ciFeria}`);
+        const data = await respuesta.json();
+
+        // 🔥 Si el servidor nos mandó a volar porque no es la fecha y no somos admin, cortamos el código aquí.
+        if (data.error) {
+            console.warn(data.error);
+            return;
+        }
+
+        const rolActual = localStorage.getItem("feria_rol") || "";
+        let verEst = true, verDoc = true, verEmp = true;
+        let mostrarAvisoVacio = false;
+
+        if (rolActual === "EXPOSITOR") {
+            verEst = false; verDoc = false; verEmp = false;
+            mostrarAvisoVacio = true; 
+            try {
+                const resMiProy = await fetch(`/api/proyectos/${ciFeria}`);
+                if (resMiProy.ok) {
+                    const miProy = await resMiProy.json();
+                    if (miProy && miProy.categoria) {
+                        mostrarAvisoVacio = false; 
+                        const cat = miProy.categoria.toLowerCase();
+                        if (cat.includes('estudiante')) verEst = true;
+                        else if (cat.includes('docente')) verDoc = true;
+                        else if (cat.includes('emprendimiento')) verEmp = true;
+                    }
+                }
+            } catch(e){}
+        } 
+        else if (rolActual === "TRIBUNAL") {
+            verEst = false; verDoc = false; verEmp = false;
+            const correoTribunal = localStorage.getItem("feria_correo");
+            try {
+                const resTrib = await fetch(`/api/tribunal_correo/${correoTribunal}`);
+                if (resTrib.ok) {
+                    const trib = await resTrib.json();
+                    if (trib && trib.categoria_asignada) {
+                        const cat = trib.categoria_asignada.toLowerCase();
+                        if (cat.includes('estudiante')) verEst = true;
+                        if (cat.includes('docente')) verDoc = true;
+                        if (cat.includes('emprendimiento')) verEmp = true;
+                    }
+                }
+            } catch(e){}
+        }
+
+        const aplicarVisibilidad = (id, mostrar) => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = mostrar ? 'block' : 'none';
         };
 
-        renderizarTop(tbodiesTop[0], topEstudiantes);
-        renderizarTop(tbodiesTop[1], topDocentes);
-        renderizarTop(tbodiesTop[2], topEmprendimientos);
+        aplicarVisibilidad('bloque-res-est', verEst); aplicarVisibilidad('bloque-det-est', verEst);
+        aplicarVisibilidad('bloque-res-doc', verDoc); aplicarVisibilidad('bloque-det-doc', verDoc);
+        aplicarVisibilidad('bloque-res-emp', verEmp); aplicarVisibilidad('bloque-det-emp', verEmp);
 
-        // --- 5. RENDERIZAR TABLAS DETALLADAS ---
-        document.querySelectorAll('#tabla-detalles h4').forEach(h4 => {
-            h4.style.color = "#60a5fa"; 
-            h4.style.fontSize = "1.25rem";
-            h4.style.borderBottom = "1px solid rgba(255, 255, 255, 0.15)";
-            h4.style.paddingBottom = "8px";
-            h4.style.marginTop = "25px";
+        const btnDetalle = document.getElementById('btn-mas-detalle');
+        if (btnDetalle) {
+            btnDetalle.style.display = (verEst || verDoc || verEmp) ? 'flex' : 'none';
+        }
+
+        let msgVacio = document.getElementById('mensaje-sin-ranking');
+        if (!msgVacio) {
+            msgVacio = document.createElement('div');
+            msgVacio.id = 'mensaje-sin-ranking';
+            msgVacio.style.cssText = 'text-align: center; padding: 50px 20px; background: rgba(0, 0, 0, 0.15); border-radius: 12px; margin-top: 20px; color: #a0aec0; border: 2px dashed rgba(255,255,255,0.1);';
+            const headerModulo = document.querySelector('#resultados .header-module');
+            if (headerModulo) headerModulo.insertAdjacentElement('afterend', msgVacio);
+        }
+
+        if (mostrarAvisoVacio) {
+            msgVacio.style.display = 'block';
+            msgVacio.innerHTML = `
+                <i class="fas fa-project-diagram" style="font-size: 3.5rem; color: rgba(255,255,255,0.2); margin-bottom: 15px;"></i>
+                <h3 style="color: #ffffff; font-size: 1.3rem; margin-bottom: 10px;">Aún no has registrado tu proyecto</h3>
+                <p style="font-size: 0.95rem; max-width: 400px; margin: 0 auto; line-height: 1.5;">Ve a la pestaña <b>"Mi Proyecto"</b>, sube tu documentación y el sistema te asignará a tu ranking correspondiente automáticamente.</p>
+            `;
+        } else {
+            msgVacio.style.display = 'none';
+        }
+
+        ['top-estudiantes', 'top-docentes', 'top-emprendimientos', 'ranking-estudiantes', 'ranking-docentes', 'ranking-emprendimientos'].forEach(id => {
+            const tb = document.getElementById(id); if (tb) tb.innerHTML = '';
         });
 
-        const renderizarDetalle = (idTbody, datos) => {
-            const tbody = document.getElementById(idTbody);
-            if (!tbody) return;
-            tbody.innerHTML = '';
-            
-            if (datos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #a0aec0; padding: 20px; background: rgba(0,0,0,0.2) !important;">No hay proyectos para mostrar en esta categoría.</td></tr>';
+        const inyectarFilas = (arreglo, idTop, idRanking) => {
+            const tbTop = document.getElementById(idTop); const tbRank = document.getElementById(idRanking);
+            if (!tbTop || !tbRank) return;
+
+            if (arreglo.length === 0) {
+                tbTop.innerHTML = '<tr><td colspan="2" style="text-align:center; padding:15px; color:#fff;">Sin proyectos pre-seleccionados</td></tr>';
+                tbRank.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px;">Sin datos</td></tr>';
                 return;
             }
 
-            datos.forEach((p, index) => {
-                let lugar = index + 1;
-                let medallaHTML = `<span style="font-weight: bold; color: #cbd5e1; font-size: 1.1rem;">${lugar}°</span>`;
-                
-                if (lugar === 1 && p.notaFinal > 0) medallaHTML = '<i class="fas fa-trophy" style="color: #ffc107; font-size: 1.3rem;"></i>';
-                else if (lugar === 2 && p.notaFinal > 0) medallaHTML = '<i class="fas fa-trophy" style="color: #e2e8f0; font-size: 1.2rem;"></i>';
-                else if (lugar === 3 && p.notaFinal > 0) medallaHTML = '<i class="fas fa-trophy" style="color: #d97706; font-size: 1.1rem;"></i>';
-
-                tbody.innerHTML += `
-                    <tr style="background: rgba(15, 23, 42, 0.6) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.1); transition: 0.2s;">
-                        <td style="text-align: center; padding: 14px; background: transparent !important; color: #ffffff !important;">${medallaHTML}</td>
-                        <td style="padding: 14px; font-weight: bold; background: transparent !important; color: #ffffff !important;">${p.titulo}</td>
-                        <td style="padding: 14px; text-align: center; background: transparent !important; color: #93c5fd !important; font-weight: 500;">${p.notaTribunalFinal.toFixed(2)}</td>
-                        <td style="padding: 14px; text-align: center; background: transparent !important; color: #34d399 !important; font-weight: 500;">${p.notaPublicoFinal.toFixed(2)}</td>
-                        <td class="final-score" style="padding: 14px; text-align: center; font-weight: bold; background: transparent !important; color: #ffc107 !important; font-size: 1.15rem;">${p.notaFinal.toFixed(2)}</td>
-                    </tr>
-                `;
+            arreglo.forEach((proy, index) => {
+                const medallaHTML = index === 0 ? '<i class="fas fa-trophy" style="color: #FFD700; font-size: 1.5rem;"></i>' : index === 1 ? '<i class="fas fa-trophy" style="color: #C0C0C0; font-size: 1.5rem;"></i>' : index === 2 ? '<i class="fas fa-trophy" style="color: #CD7F32; font-size: 1.5rem;"></i>' : `<b>${index + 1}º</b>`;
+                if (index < 3) tbTop.innerHTML += `<tr><td><div style="display:flex; align-items:center; gap:10px;">${medallaHTML} <span>${proy.titulo}</span></div></td><td style="text-align:center; font-weight:bold; font-size:1.1rem; color:#4db8ff;">${proy.nota_final.toFixed(2)}</td></tr>`;
+                tbRank.innerHTML += `<tr><td style="text-align:center;">${medallaHTML}</td><td>${proy.titulo}</td><td style="text-align:center;">${proy.tribunal_60.toFixed(2)}</td><td style="text-align:center;">${proy.publico_40.toFixed(2)}</td><td style="text-align:center; font-weight:bold; color:var(--rojo-uab); font-size:1.1rem;">${proy.nota_final.toFixed(2)}</td></tr>`;
             });
         };
 
-        renderizarDetalle('ranking-estudiantes', topEstudiantes);
-        renderizarDetalle('ranking-docentes', topDocentes);
-        renderizarDetalle('ranking-emprendimientos', topEmprendimientos);
+        const dataEst = data.filter(p => p.categoria.includes('estudiante'));
+        const dataDoc = data.filter(p => p.categoria.includes('docente'));
+        const dataEmp = data.filter(p => p.categoria.includes('emprendimiento'));
 
-        // --- 6. RENDERIZAR GRÁFICOS DINÁMICOS ---
-        const paletaColores = ['#3498db', '#e74c3c', '#f1c40f', '#2ecc71', '#9b59b6'];
+        inyectarFilas(dataEst, 'top-estudiantes', 'ranking-estudiantes');
+        inyectarFilas(dataDoc, 'top-docentes', 'ranking-docentes');
+        inyectarFilas(dataEmp, 'top-emprendimientos', 'ranking-emprendimientos');
 
-        const dibujarGrafico = (idCanvas, graficoVariable, datos) => {
-            const canvas = document.getElementById(idCanvas);
-            if (!canvas) return graficoVariable;
-
-            if (graficoVariable) graficoVariable.destroy();
-
-            const top5 = datos.slice(0, 5);
-            const filtrados = top5.filter(d => d.notaFinal >= 0); 
+        const crearGraficoPastel = (canvasId, arregloDatos, chartVariable) => {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return chartVariable;
             
-            let titulos = filtrados.map(d => d.titulo);
-            let notas = filtrados.map(d => d.notaFinal > 0 ? d.notaFinal.toFixed(2) : 1); 
-            let colores = paletaColores.slice(0, notas.length);
+            if (chartVariable !== null) chartVariable.destroy();
 
-            if (titulos.length === 0) {
-                titulos = ['Esperando Evaluaciones'];
-                notas = [1];
-                colores = ['#555'];
+            if (arregloDatos.length === 0) {
+                ctx.style.display = 'none';
+                return null;
             }
+            
+            ctx.style.display = 'block';
 
-            const config = {
-                type: 'pie',
+            const top5 = arregloDatos.slice(0, 5);
+            const etiquetas = top5.map(p => p.titulo.length > 20 ? p.titulo.substring(0, 20) + "..." : p.titulo);
+            const puntajes = top5.map(p => p.nota_final.toFixed(2));
+            const colores = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'];
+
+            return new Chart(ctx, {
+                type: 'doughnut',
                 data: {
-                    labels: titulos,
+                    labels: etiquetas,
                     datasets: [{
-                        data: notas,
-                        backgroundColor: colores,
-                        borderWidth: 0
+                        data: puntajes,
+                        backgroundColor: colores.slice(0, top5.length),
+                        borderWidth: 2,
+                        borderColor: '#2b2b2b'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'right', labels: { color: '#fff', font: { size: 10 } } },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    //  PROTECCIÓN: Si es el gráfico gris de espera, no buscamos notas
-                                    if (titulos[0] === 'Esperando Evaluaciones') {
-                                        return ' Aún no hay notas registradas';
-                                    }
-                                    // Usamos 'filtrados' en vez de 'datos' para que los índices cuadren perfectamente
-                                    let valorReal = filtrados[context.dataIndex].notaFinal;
-                                    return context.label + ': ' + valorReal.toFixed(2) + ' pts';
-                                }
-                            }
+                        legend: {
+                            position: 'right',
+                            labels: { color: '#ffffff', font: { size: 12 } }
                         }
                     }
                 }
-            };
-            return new Chart(canvas, config);
+            });
         };
 
-        window.graficoEstudiantes = dibujarGrafico('graficoPastel', window.graficoEstudiantes, topEstudiantes);
-        window.graficoDocentes = dibujarGrafico('graficoPastelDocentes', window.graficoDocentes, topDocentes);
-        window.graficoEmprendimientos = dibujarGrafico('graficoPastelEmprendimientos', window.graficoEmprendimientos, topEmprendimientos);
+        if (verEst) chartEstudiante = crearGraficoPastel('graficoPastel', dataEst, chartEstudiante);
+        if (verDoc) chartDocente = crearGraficoPastel('graficoPastelDocentes', dataDoc, chartDocente);
+        if (verEmp) chartEmprendimiento = crearGraficoPastel('graficoPastelEmprendimientos', dataEmp, chartEmprendimiento);
 
-        // --- 7. APLICAR EL FILTRO DESTRUCTIVO FINAL ---
-        aplicarFiltroVisibilidad();
-
-    } catch (error) {
-        console.error("Error al calcular resultados:", error);
-    }
+    } catch (error) { console.error(error); }
 };
 
 window.alternarDetalles = function() {
-    const tablaDetalles = document.getElementById('tabla-detalles');
-    const btnMasDetalle = document.getElementById('btn-mas-detalle');
-
-    if (tablaDetalles.style.display === 'none' || tablaDetalles.style.display === '') {
-        tablaDetalles.style.display = 'block';
-        btnMasDetalle.innerHTML = '<i class="fas fa-eye-slash"></i> Ocultar Detalles';
+    const tabla = document.getElementById('tabla-detalles');
+    const btn = document.getElementById('btn-mas-detalle');
+    if (tabla.style.display === "none" || tabla.style.display === "") {
+        tabla.style.display = "block"; btn.innerHTML = '<i class="fas fa-eye-slash"></i> Ocultar Detalle'; btn.style.backgroundColor = "#6c757d";
     } else {
-        tablaDetalles.style.display = 'none';
-        btnMasDetalle.innerHTML = '<i class="fas fa-list"></i> Más Detalle';
+        tabla.style.display = "none"; btn.innerHTML = '<i class="fas fa-list"></i> Más Detalle'; btn.style.backgroundColor = "var(--azul-uab)";
     }
 };

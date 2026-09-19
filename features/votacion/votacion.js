@@ -1,231 +1,217 @@
 // =========================================================================
 // ARCHIVO: features/votacion/votacion.js
-// FUNCIÓN: Manejo de votación mediante QR y GPS (Conectado a PostgreSQL)
+// FUNCIÓN: Lógica de la pantalla pública de votación por QR con GPS Anti-Fraude
 // =========================================================================
 
-let proyectoActualDatos = null; // Guardamos en memoria los datos del proyecto
+let calificacionActual = 0;
 
-// --- 1. INICIALIZACIÓN DEL ENTORNO AL ESCANEAR QR ---
-window.revisarURLVotacion = async function() {
-    const parametros = new URLSearchParams(window.location.search);
-    const idProy = parametros.get('idProy');
-    const cat = parametros.get('cat');
+// 📍 CONFIGURACIÓN DEL CERCO VIRTUAL (GEOFENCING)
+const LATITUD_FERIA = -14.833937564763247;   //mi casa -14.834002316055194, -64.89944331965522, UABJB -14.812559732228735, -64.89515149760588
+const LONGITUD_FERIA = -64.899433750549;  
+const RADIO_PERMITIDO_METROS = 500; 
 
-    if (idProy && cat) {
-        console.log("¡QR Detectado! Iniciando entorno seguro de votación...");
+function calcularDistanciaMetros(lat1, lon1, lat2, lon2) {
+    const R = 6371e3; 
+    const radLat1 = lat1 * Math.PI / 180;
+    const radLat2 = lat2 * Math.PI / 180;
+    const deltaLat = (lat2 - lat1) * Math.PI / 180;
+    const deltaLon = (lon2 - lon1) * Math.PI / 180;
 
-        setTimeout(async () => {
-            const loginScreen = document.getElementById('login-screen');
-            if (loginScreen) loginScreen.style.display = 'none';
-            
-            const mainContent = document.getElementById('main-content');
-            if (mainContent) mainContent.style.display = 'block';
-            
-            document.querySelectorAll('.module-section').forEach(sec => sec.style.display = 'none');
-            
-            const votarSec = document.getElementById('votar-proyecto');
-            if (votarSec) votarSec.style.display = 'block';
+    const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+              Math.cos(radLat1) * Math.cos(radLat2) *
+              Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; 
+}
 
-            try {
-                // Pedimos los datos del proyecto a PostgreSQL (Ruta Relativa)
-                const respuesta = await fetch(`/api/proyectos_qr/${idProy}`);
-                if (respuesta.ok) {
-                    proyectoActualDatos = await respuesta.json();
-                    
-                    // 🔴 CANDADO ACTIVADO: ¿Pasó la etapa 1 del Tribunal?
-                    if (proyectoActualDatos.estado_evaluacion === "Pre-seleccionado") {
-                        document.getElementById('votar-titulo').innerText = proyectoActualDatos.titulo;
-                        document.getElementById('voto-idProy').value = idProy;
-                        document.getElementById('voto-cat').value = cat;
-                    } else {
-                        // Si reprobó o aún no ha sido evaluado por el tribunal
-                        document.getElementById('votar-titulo').innerHTML = "<span style='color: #dc3545;'><i class='fas fa-lock'></i> Proyecto no habilitado</span><br><small style='color:#666; font-size:12px;'>Este proyecto aún no ha superado la fase de Pre-selección.</small>";
-                        document.getElementById('form-votacion').style.display = 'none';
-                    }
-                } else {
-                    document.getElementById('votar-titulo').innerText = "❌ Proyecto no encontrado";
-                    document.getElementById('form-votacion').style.display = 'none';
-                }
-            } catch (error) {
-                console.error("Error al cargar datos del QR:", error);
-                document.getElementById('votar-titulo').innerText = "❌ Error de conexión con la base de datos";
+window.cargarProyectoParaVotar = async function() {
+    const params = new URLSearchParams(window.location.search);
+    const idProy = params.get('idProy');
+
+    if (idProy) {
+        const loginScreen = document.getElementById('login-screen');
+        if (loginScreen) loginScreen.style.display = 'none';
+        document.body.classList.remove('login-active');
+
+        document.querySelectorAll('.navbar, header, #main-header').forEach(b => b.style.setProperty('display', 'none', 'important'));
+        
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) {
+            mainContent.style.display = 'block';
+            mainContent.style.setProperty('padding-top', '0px', 'important');
+        }
+        
+        document.getElementById('votar-proyecto').style.display = 'block';
+
+        try {
+            const res = await fetch(`/api/proyectos_qr/${idProy}`);
+            if (res.ok) {
+                const proyecto = await res.json();
+                document.getElementById('votar-titulo').innerText = proyecto.titulo;
+                document.getElementById('voto-idProy').value = proyecto.id;
+                document.getElementById('voto-cat').value = proyecto.categoria;
+            } else {
+                document.getElementById('votar-titulo').innerText = "Proyecto no encontrado.";
+                document.getElementById('votar-titulo').style.color = "#d32f2f";
             }
-        }, 200); 
+        } catch (error) {
+            console.error(error);
+        }
     }
 };
 
-window.addEventListener('DOMContentLoaded', () => {
-    window.revisarURLVotacion();
-});
-
-// --- 2. VALIDACIÓN VISUAL DEL CI EN TIEMPO REAL ---
 window.simularVerificacionCI = async function() {
-    const ci = document.getElementById('voto-ci').value.trim();
-    const mensaje = document.getElementById('mensaje-validacion-ci');
-    const btnVotar = document.getElementById('btnEnviarVoto');
+    const ciInput = document.getElementById('voto-ci').value.trim();
+    const msj = document.getElementById('mensaje-validacion-ci');
+    const btn = document.getElementById('btnEnviarVoto');
 
-    if (ci === "") {
-        mensaje.innerHTML = "";
-        btnVotar.disabled = false;
-        btnVotar.style.opacity = "1";
+    if (ciInput.length < 5) {
+        msj.innerHTML = ""; 
+        btn.disabled = true; 
+        btn.style.opacity = "0.5"; 
+        btn.style.cursor = "not-allowed";
         return;
     }
 
-    mensaje.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consultando padrón oficial...';
-    mensaje.style.color = "#6c757d";
-    btnVotar.disabled = true;
-    btnVotar.style.opacity = "0.5";
+    msj.innerHTML = '<span style="color: #666;"><i class="fas fa-spinner fa-spin"></i> Buscando...</span>';
 
     try {
-        // Usamos el puente de usuarios para saber si es un visitante real (Ruta Relativa)
-        const respuesta = await fetch(`/api/usuarios/${ci}`);
-        
-        if (respuesta.ok) {
-            const data = await respuesta.json();
-            if (data.rol === "VISITANTE") {
-                mensaje.innerHTML = '<i class="fas fa-check-circle"></i> CI habilitado para votar';
-                mensaje.style.color = "#28a745"; 
-                btnVotar.disabled = false;
-                btnVotar.style.opacity = "1";
-                return;
+        const res = await fetch(`/api/usuarios/${ciInput}`);
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data.datos) {
+                msj.innerHTML = `<span style="color: #28a745;"><i class="fas fa-check-circle"></i> Habilitado: ${data.datos.nombre_completo}</span>`;
+                if (calificacionActual > 0) {
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                    btn.style.cursor = "pointer";
+                }
             }
+        } else {
+            msj.innerHTML = `<span style="color: #d32f2f;"><i class="fas fa-times-circle"></i> CI no habilitado. Regístrese en Habilitación.</span>`;
+            btn.disabled = true;
+            btn.style.opacity = "0.5";
+            btn.style.cursor = "not-allowed";
         }
-        
-        mensaje.innerHTML = '<i class="fas fa-times-circle"></i> El CI no está habilitado. Debe registrarse en la entrada.';
-        mensaje.style.color = "#dc3545"; 
-        
-    } catch (error) {
-        mensaje.innerHTML = 'Error de conexión. Reintente.';
+    } catch(e) {
+        msj.innerHTML = `<span style="color: #d32f2f;"><i class="fas fa-exclamation-triangle"></i> Error de conexión.</span>`;
     }
-};
-
-// --- 3. HERRAMIENTAS MATEMÁTICAS Y DE SENSORES (GPS) ---
-function calcularDistanciaGPS(lat1, lon1, lat2, lon2) {
-    const radioTierra = 6371e3; 
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return radioTierra * c; 
 }
 
-const obtenerUbicacionRobusta = () => {
-    return new Promise((resolve, reject) => {
-        if (!navigator.geolocation) return reject({ code: 0, message: "Navegador sin GPS" });
-        navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 });
-    });
-};
+window.calificarConEstrellas = function(nota) {
+    calificacionActual = nota;
+    document.getElementById('voto-puntaje').value = nota * 2; 
 
-// --- 4. FUNCIÓN PRINCIPAL DE SEGURIDAD Y GUARDADO ---
+    for (let i = 1; i <= 5; i++) {
+        const star = document.getElementById(`star-${i}`);
+        if (i <= nota) {
+            star.style.color = "#FFD700"; 
+            star.style.transform = "scale(1.1)";
+            star.classList.add('resplandor-estrella');
+        } else {
+            star.style.color = "#ddd"; 
+            star.style.transform = "scale(1)";
+            star.classList.remove('resplandor-estrella');
+        }
+    }
+    
+    document.getElementById('texto-puntuacion').innerHTML = `Puntuación: <span style="color:var(--azul-uab);">${nota * 2} / 10 puntos</span> (${nota} estrellas)`;
+    window.simularVerificacionCI(); 
+}
+
+// ⏳ FUNCIÓN ESPECIAL: Obliga al sistema a esperar la respuesta del GPS del usuario
+function obtenerUbicacionGPS() {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject(new Error("Tu dispositivo o navegador no soporta geolocalización."));
+        }
+        navigator.geolocation.getCurrentPosition(
+            (position) => resolve(position),
+            (error) => {
+                let msg = "Error desconocido al obtener ubicación.";
+                if (error.code === 1) msg = "PERMISO DENEGADO: Debes darle 'Permitir' a la solicitud de ubicación GPS en tu pantalla para poder votar.";
+                if (error.code === 2) msg = "UBICACIÓN NO DISPONIBLE: No se pudo conectar al satélite GPS. Intenta salir a un lugar más despejado.";
+                if (error.code === 3) msg = "TIEMPO AGOTADO: El GPS tardó demasiado en responder.";
+                reject(new Error(msg));
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        );
+    });
+}
+
+// 🔥 ENVÍO DE VOTO CON CONTROL ABSOLUTO DE ESTADO
 window.enviarCalificacion = async function(e) {
     e.preventDefault();
+    const btn = document.getElementById('btnEnviarVoto');
     
     const idProy = document.getElementById('voto-idProy').value;
     const ci = document.getElementById('voto-ci').value.trim();
-    const puntajeFinal = parseInt(document.getElementById('voto-puntaje').value);
+    const nota = document.getElementById('voto-puntaje').value;
 
-    if(isNaN(puntajeFinal) || puntajeFinal < 2 || puntajeFinal > 10) {
-        alert("⭐ Atención: Por favor, selecciona entre 1 y 5 estrellas.");
+    if (!idProy || !nota || !ci) {
+        alert("⚠️ Completa todos los campos y selecciona las estrellas.");
         return;
     }
 
-    const btn = document.getElementById('btnEnviarVoto');
-    const textoOriginal = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando seguridad...';
+    // 1. Bloqueamos botón y avisamos que estamos buscando GPS
+    btn.innerHTML = '<i class="fas fa-map-marker-alt"></i> Obteniendo GPS...';
     btn.disabled = true;
+    btn.style.opacity = "0.7";
+    btn.style.cursor = "wait";
 
     try {
-        // --- FILTRO ANTI-FRAUDE: ¿El que vota es el dueño del proyecto? ---
-        if (proyectoActualDatos && ci === proyectoActualDatos.ci_propietario) {
-            alert("🛑 ACCESO DENEGADO: Por normas de transparencia de la Tecno Feria, los expositores no pueden votar por su propio proyecto.");
-            btn.innerHTML = textoOriginal; btn.disabled = false; return;
+        // 2. Detiene el código aquí hasta que el usuario le de "Permitir" o "Bloquear"
+        const position = await obtenerUbicacionGPS();
+        const userLat = position.coords.latitude;
+        const userLon = position.coords.longitude;
+
+        // 3. Calculamos la distancia en el celular
+        const distanciaMetros = calcularDistanciaMetros(LATITUD_FERIA, LONGITUD_FERIA, userLat, userLon);
+
+        if (distanciaMetros > RADIO_PERMITIDO_METROS) {
+            alert(`⛔ ALERTA DE FRAUDE: ESTÁS DEMASIADO LEJOS\n\nEl sistema detecta que estás a ${distanciaMetros.toFixed(0)} metros de la feria.\nSolo se permite votar dentro del recinto habilitado.`);
+            
+            // RESTAURA EL BOTÓN SI FALLA LA DISTANCIA (Permite reintentar)
+            btn.innerHTML = 'Confirmar Voto';
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            btn.style.cursor = "pointer";
+            return;
         }
 
-        // --- FILTRO GPS ---
-        btn.innerHTML = '<i class="fas fa-map-marker-alt fa-pulse"></i> Obteniendo satélites...';
-        const posicionGPS = await obtenerUbicacionRobusta();
+        // 4. Si la distancia es correcta, enviamos el voto a la base de datos
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando Voto...';
         
-        const latCelular = posicionGPS.coords.latitude;
-        const lonCelular = posicionGPS.coords.longitude;
-        const latFeria = -14.812506161535874;  //-14.833966217092081, -64.8994602180307
-        const lonFeria = -64.89586160070048;    //UAB -14.812506161535874, -64.89586160070048
-        
-        const distancia = calcularDistanciaGPS(latCelular, lonCelular, latFeria, lonFeria);
-
-        if (distancia > 500) {
-            alert(`🚫 ALERTA DE FRAUDE\n\nEl sistema detecta que estás a ${Math.round(distancia)} metros de distancia del evento.\nSolo se permiten votos físicamente dentro del campus.`);
-            btn.innerHTML = textoOriginal; btn.disabled = false; return;
-        }
-
-        // --- ✅ PASÓ TODO: ENVIAMOS A POSTGRESQL (Ruta Relativa) ---
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando voto...';
-        
-        const respuesta = await fetch('/api/votar', {
+        const res = await fetch('/api/votar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idProyecto: idProy, ci: ci, nota: puntajeFinal, lat: latCelular, lon: lonCelular })
+            body: JSON.stringify({
+                idProyecto: idProy,
+                ci: ci,
+                nota: nota,
+                lat: userLat,
+                lon: userLon
+            })
         });
+        
+        const resData = await res.json();
+        
+        if (!res.ok) throw new Error(resData.error || "Error al registrar el voto.");
 
-        const dataRespuesta = await respuesta.json();
-
-        if (!respuesta.ok) {
-            alert("❌ Error: " + dataRespuesta.error);
-            btn.innerHTML = textoOriginal; btn.disabled = false; return;
-        }
-
-        // Pantalla de Éxito
-        const cantidadEstrellas = puntajeFinal / 2;
-        let estrellasHTML = "";
-        for(let i=0; i<cantidadEstrellas; i++) estrellasHTML += '<i class="fas fa-star" style="color: #ffc107;"></i> ';
-
-        e.target.innerHTML = `
-            <div style="text-align: center; color: #28a745; margin-top: 15px;">
-                <i class="fas fa-check-circle" style="font-size: 4rem; margin-bottom: 10px;"></i>
-                <h3 style="margin: 0; color: #002b5c;">¡Voto Confirmado!</h3>
-                <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 12px; margin: 15px 0;">
-                    <div style="font-size: 1.3rem; margin-bottom: 5px;">${estrellasHTML}</div>
-                    <strong style="color: #002b5c; font-size: 1.1rem;">${puntajeFinal} / 10 Puntos</strong>
-                </div>
-                <p style="color: #666; font-size: 0.85rem; margin-bottom: 25px;">
-                    Estás a ${Math.round(distancia)} metros del centro de la feria. Tu calificación ha sido asegurada por GPS.
-                </p>
-                <button type="button" onclick="window.location.href = window.location.pathname" style="width: 100%; padding: 12px; background: white; color: #555; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer;">
-                    <i class="fas fa-arrow-left"></i> Volver al Inicio
-                </button>
-            </div>
-        `;
+        alert("🎉 ¡Voto registrado con éxito! Gracias por participar.");
+        localStorage.clear();
+        window.location.href = window.location.pathname; 
 
     } catch (error) {
-        if (error.code === 1) alert("❌ VOTO BLOQUEADO\n\nEs obligatorio encender tu GPS y dar permisos de ubicación para confirmar tu asistencia.");
-        else alert("❌ Error al procesar el voto. Revisa tu conexión a internet.");
+        // Si el usuario rechazó el permiso GPS o la base de datos falló:
+        alert("❌ " + error.message);
         
-        btn.innerHTML = textoOriginal; btn.disabled = false;
+        // RESTAURA EL BOTÓN INMEDIATAMENTE PARA PERMITIR OTRO INTENTO
+        btn.innerHTML = 'Confirmar Voto';
+        btn.disabled = false;
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
     }
 };
 
-window.calificarConEstrellas = function(cantidadEstrellas) {
-    const puntos = cantidadEstrellas * 2;
-    const inputPuntaje = document.getElementById('voto-puntaje');
-    if (inputPuntaje) inputPuntaje.value = puntos;
-
-    for (let i = 1; i <= 5; i++) {
-        const estrella = document.getElementById(`star-${i}`);
-        if (estrella) {
-            if (i <= cantidadEstrellas) {
-                estrella.style.color = '#ffc107'; 
-                estrella.style.transform = 'scale(1.15)';
-                estrella.style.textShadow = '0 2px 5px rgba(255, 193, 7, 0.4)';
-            } else {
-                estrella.style.color = '#ccc'; 
-                estrella.style.transform = 'scale(1)';
-                estrella.style.textShadow = 'none';
-            }
-        }
-    }
-    const textoPuntuacion = document.getElementById('texto-puntuacion');
-    if (textoPuntuacion) {
-        textoPuntuacion.innerHTML = `Puntuación asignada: <span style="color: #002b5c; font-size: 1.1rem;">${puntos} / 10 puntos</span> (${cantidadEstrellas} ${cantidadEstrellas === 1 ? 'estrella' : 'estrellas'})`;
-    }
-};
+document.addEventListener("DOMContentLoaded", window.cargarProyectoParaVotar);

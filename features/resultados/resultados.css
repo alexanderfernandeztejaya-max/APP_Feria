@@ -1,73 +1,88 @@
-.dashboard-oscuro { background: #2b2b2b; padding: 35px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin-bottom: 30px; }
-.dash-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; }
-.dash-header-verde { background: #28a745; color: white; font-weight: bold; font-size: 1.4rem; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; border-bottom: 5px solid #ffc107; text-transform: uppercase; }
-.dash-tabla { width: 100%; border-collapse: collapse; background: #333; color: white; }
-.dash-tabla th { background: #1e7e34; padding: 18px; border: 1px solid #444; color: white; font-size: 1.15rem; }
-.dash-tabla td { padding: 18px; border: 1px solid #444; font-size: 1.1rem; background: #3a3a3a; }
-.dash-grafico-container { height: 350px; position: relative; width: 100%; background: transparent; }
-.ranking-table td:first-child i { font-size: 2rem; }
-
-/* COLORES DE LOS TROFEOS FORZADOS (!important para que FontAwesome no los quite) */
-.fa-trophy.gold { color: #FFD700 !important; }
-.fa-trophy.silver { color: #C0C0C0 !important; }
-.fa-trophy.bronze { color: #CD7F32 !important; }
-
-.final-score { font-weight: bold; color: var(--azul-uab); font-size: 1.5rem; }
 /* ==========================================================================
-   📱 ADAPTACIÓN PARA CELULARES (DISEÑO RESPONSIVO DE RESULTADOS)
+   ARCHIVO: features/resultados/resultados.css
    ========================================================================== */
+   .dashboard-oscuro { background: #2b2b2b; padding: 35px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin-bottom: 30px; }
+   .dash-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; }
+   .dash-header-verde { background: #28a745; color: white; font-weight: bold; font-size: 1.4rem; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; border-bottom: 5px solid #ffc107; text-transform: uppercase; }
+   .dash-tabla { width: 100%; border-collapse: collapse; background: #333; color: white; }
+   .dash-tabla th { background: #1e7e34; padding: 18px; border: 1px solid #444; color: white; font-size: 1.15rem; }
+   .dash-tabla td { padding: 18px; border: 1px solid #444; font-size: 1.1rem; background: #3a3a3a; }
+   .dash-grafico-container { height: 350px; position: relative; width: 100%; background: transparent; }
+   .ranking-table td:first-child i { font-size: 2rem; }
+   
+   .fa-trophy.gold { color: #FFD700 !important; }
+   .fa-trophy.silver { color: #C0C0C0 !important; }
+   .fa-trophy.bronze { color: #CD7F32 !important; }
+   .final-score { font-weight: bold; color: var(--azul-uab); font-size: 1.5rem; }
+   
    @media screen and (max-width: 768px) {
-    .dashboard-oscuro { 
-        padding: 15px; /* Reducimos el marco oscuro para dar más espacio */
-    }
-    .dash-grid { 
-        grid-template-columns: 1fr; /* MAGIA: Esto pone el gráfico debajo de la tabla */
-        gap: 25px; 
-    }
-    .dash-grafico-container { 
-        height: 280px; /* Reducimos un poco la altura del gráfico en móviles */
-        width: 100%;
-    }
-    .dash-header-verde { 
-        font-size: 1.1rem; 
-        padding: 12px; 
-    }
-    .dash-tabla th, .dash-tabla td { 
-        padding: 12px; 
-        font-size: 0.95rem; /* Letras un poco más pequeñas para que quepan bien */
-    }
-    .ranking-table th, .ranking-table td {
-        padding: 10px;
-        font-size: 0.85rem;
-    }
-    .final-score {
-        font-size: 1.2rem; /* Reducimos el tamaño de la nota final en la tabla de detalles */
-    }
-}
-/* =========================================
-   ESTILO DEL BOTÓN DE "MÁS DETALLES"
-========================================= */
-.btn-detalle {
-    background-color: var(--azul-uab);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px; /* Da un espacio elegante entre el icono y el texto */
-    margin: 20px auto; /* Esto centra el botón perfectamente en la pantalla */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    max-width: 250px;
-}
-
-.btn-detalle:hover {
-    background-color: #001f3f; /* Azul más oscuro al pasar el mouse */
-    transform: translateY(-2px); /* Pequeño salto 3D al pasar el mouse */
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
+       .dashboard-oscuro { padding: 15px; }
+       .dash-grid { grid-template-columns: 1fr; gap: 25px; }
+       .dash-grafico-container { height: 280px; width: 100%; }
+       .dash-header-verde { font-size: 1.1rem; padding: 12px; }
+       .dash-tabla th, .dash-tabla td { padding: 12px; font-size: 0.95rem; }
+       .ranking-table th, .ranking-table td { padding: 10px; font-size: 0.85rem; }
+       .final-score { font-size: 1.2rem; }
+   }
+   
+   .btn-detalle {
+       background-color: var(--azul-uab); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px; margin: 20px auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 250px;
+   }
+   .btn-detalle:hover { background-color: #001f3f; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+   
+   /* =========================================
+      🔥 CORRECCIÓN: TABLA DE MÁS DETALLES (MODO OSCURO)
+      ========================================= */
+   
+   /* 1. Arreglar el contenedor para que haga juego con el Dashboard oscuro */
+   #tabla-detalles .scroll-tabla-proyectos {
+       background-color: #2b2b2b !important;
+       border: 1px solid #444 !important;
+       border-radius: 12px !important;
+       box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
+   }
+   
+   /* 2. Cabecera Verde de la tabla (igual al estilo superior) */
+   #tabla-detalles .scroll-tabla-proyectos table thead th {
+       background-color: #1e7e34 !important; 
+       color: #ffffff !important;
+       border-bottom: 4px solid #ffc107 !important;
+       padding: 15px !important;
+       font-size: 1.1rem !important;
+       text-transform: uppercase !important;
+   }
+   
+   /* 3. Fondo oscuro y texto blanco para las celdas (Arregla el problema invisible) */
+   #tabla-detalles .scroll-tabla-proyectos table tbody td {
+       color: #ffffff !important;
+       background-color: #333333 !important;
+       border: 1px solid #444 !important;
+       padding: 15px !important;
+       font-size: 1.05rem !important;
+   }
+   
+   /* Efecto al pasar el ratón en la tabla de detalles */
+   #tabla-detalles .scroll-tabla-proyectos table tbody tr:hover td {
+       background-color: #3a3a3a !important;
+   }
+   
+   /* 4. Arreglar los títulos "Ranking..." (H4) que apenas se veían por el azul oscuro */
+   #bloque-det-est h4, 
+   #bloque-det-doc h4, 
+   #bloque-det-emp h4 {
+       color: #ffffff !important;
+       font-size: 1.4rem !important;
+       margin-bottom: 15px !important;
+       margin-top: 25px !important;
+       text-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
+       border-bottom: 2px solid #1e7e34 !important;
+       padding-bottom: 8px !important;
+       display: inline-block !important;
+   }
+   
+   /* 5. Asegurar que la nota final en rojo resalte en el fondo oscuro */
+   #tabla-detalles td[style*="color:var(--rojo-uab)"],
+   #tabla-detalles td[style*="color: var(--rojo-uab)"] {
+       color: #ff6b6b !important; /* Rojo pastel neón que brilla en fondo oscuro */
+       font-size: 1.25rem !important;
+   }

@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // =========================================================================
-// NUEVO: FUNCIONES PARA EL PANEL DE CONFIGURACIÓN DE FECHAS
+// FUNCIONES PARA EL PANEL DE CONFIGURACIÓN DE FECHAS
 // =========================================================================
 window.cargarFechasActuales = async function() {
     try {
@@ -481,7 +481,6 @@ window.cargarTablaInstituciones = async function() {
             tbody.innerHTML += `
                 <tr style="border-bottom: 1px solid #e2e8f0 !important; background-color: #ffffff !important;">
                     <td style="padding: 12px !important;">
-                        <!-- 🔥 FORZAMOS LETRA NEGRA DIRECTO EN LA ETIQUETA STRONG -->
                         <strong style="color: #000000 !important; font-size: 1rem !important;">${inst.nombre}</strong>
                     </td>
                     <td style="padding: 12px !important; color: #333333 !important; font-size: 0.95rem !important;">${inst.tipo}</td>
@@ -525,4 +524,52 @@ window.eliminarInstitucion = async function(id, nombre) {
         window.cargarTablaInstituciones();
         window.cargarInstitucionesSelects(); 
     } catch (error) { alert("❌ Error al eliminar."); }
+};
+
+// =========================================================================
+// REGISTRO DE NUEVOS ADMINISTRADORES (POSTGRESQL DIRECTO)
+// =========================================================================
+window.registrarNuevoAdmin = async function(e) {
+    e.preventDefault();
+    
+    const ci = document.getElementById('adminNewCI').value.trim();
+    const nombre = document.getElementById('adminNewNombre').value.trim();
+    const correo = document.getElementById('adminNewCorreo').value.trim();
+    const pass = document.getElementById('adminNewPass').value;
+    
+    const btn = document.getElementById('btnGuardarAdmin');
+    const textoOriginal = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando administrador...';
+    btn.disabled = true;
+
+    try {
+        // Enviar datos directamente a tu servidor Node.js
+        const respuesta = await fetch('/api/administradores', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ci: ci,
+                nombre: nombre,
+                correo: correo,
+                password: pass
+            })
+        });
+
+        const data = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new Error(data.error || "No se pudo crear el administrador.");
+        }
+
+        alert("✅ ¡Cuenta de administrador creada exitosamente en la base de datos!\n\nEl nuevo usuario ya puede iniciar sesión.");
+        e.target.reset(); // Limpia el formulario
+        
+    } catch (error) {
+        console.error("Error al registrar administrador:", error);
+        alert("❌ Ocurrió un error: " + error.message);
+    } finally {
+        btn.innerHTML = textoOriginal;
+        btn.disabled = false;
+    }
 };

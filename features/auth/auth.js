@@ -1,6 +1,6 @@
 // =========================================================================
 // ARCHIVO: features/auth/auth.js
-// FUNCIÓN: Manejo de interfaz de usuario, Login de Roles y Seguridad
+// FUNCIÓN: Manejo de interfaz de usuario y Login Seguro en PostgreSQL
 // =========================================================================
 
 window.toggleAuthMode = function(event, mode) {
@@ -34,62 +34,41 @@ window.handleLogin = async function(e) {
             return;
         }
 
-        const respuesta = await fetch(`/api/usuarios/${ciIngresado}`);
-
-        if (!respuesta.ok) {
-            alert("❌ Usuario o contraseña incorrectos.");
-            document.getElementById('passInput').value = "";
-            return;
-        }
+        // Conexión directa a PostgreSQL
+        const respuesta = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ identificador: ciIngresado, password: p })
+        });
 
         const data = await respuesta.json();
-        const rol = data.rol;
-        const usuarioDB = data.datos;
-        const tokenBD = data.token; //  Obtenemos el nuevo Ticket Digital
 
-        if (rol === "VISITANTE") {
-            if (ciIngresado === p) {
-                darAccesoAlSistema("VISITANTE", (usuarioDB.nombre_completo || "Visitante") + " (Público)", ciIngresado, tokenBD);
-                return;
-            } else {
-                alert("❌ Contraseña incorrecta para el visitante.");
-                document.getElementById('passInput').value = "";
-                return;
-            }
+        if (!respuesta.ok) {
+            throw new Error(data.error || "Usuario o contraseña incorrectos.");
         }
 
-        let correoReal = usuarioDB.correo; 
-        let nombreMostrar = "";
+        const rol = data.rol;
+        const usuarioDB = data.datos;
+        const tokenBD = data.token;
 
+        let nombreMostrar = "";
         const partesNombre = (usuarioDB.nombre_completo || "Usuario").trim().split(" ");
         let nombreCorto = partesNombre[0] + (partesNombre.length > 1 ? " " + partesNombre[1] : "");
 
-        if (rol === "ADMIN") {
-            nombreMostrar = nombreCorto + " (Administrador)";
-        } else if (rol === "EXPOSITOR") {
-            nombreMostrar = nombreCorto + " (Expositor)";
-        } else if (rol === "TRIBUNAL") {
-            nombreMostrar = (usuarioDB.nombre_completo || "Tribunal") + " (Tribunal)";
-        }
+        if (rol === "ADMIN") nombreMostrar = nombreCorto + " (Administrador)";
+        else if (rol === "EXPOSITOR") nombreMostrar = nombreCorto + " (Expositor)";
+        else if (rol === "TRIBUNAL") nombreMostrar = (usuarioDB.nombre_completo || "Tribunal") + " (Tribunal)";
+        else if (rol === "VISITANTE") nombreMostrar = (usuarioDB.nombre_completo || "Visitante") + " (Público)";
 
-        if (!correoReal) correoReal = `${ciIngresado}@tecnoferia.com`;
-
-        await window.signInWithEmailAndPassword(window.auth, correoReal, p);
-        darAccesoAlSistema(rol, nombreMostrar, ciIngresado, tokenBD); // 🛡️ Pasamos los datos extra
+        // Limpiamos rastro antiguo y guardamos lo nuevo
+        localStorage.clear();
+        localStorage.setItem("feria_correo", usuarioDB.correo || "");
+        
+        darAccesoAlSistema(rol, nombreMostrar, ciIngresado, tokenBD);
 
     } catch (error) {
         console.error("[Error Interno]:", error);
-        if (error.code) {
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                alert("❌ Usuario o contraseña incorrectos.");
-            } else if (error.code === 'auth/too-many-requests') {
-                alert("⚠️ Acceso bloqueado temporalmente debido a múltiples intentos fallidos. Intente más tarde.");
-            } else {
-                alert("❌ Ocurrió un error al acceder al sistema.");
-            }
-        } else {
-            alert("❌ No se pudo conectar al servidor. Verifique que el Backend (Node.js) esté encendido.");
-        }
+        alert("❌ " + error.message);
         const passInput = document.getElementById('passInput');
         if (passInput) { passInput.value = ""; passInput.focus(); }
     } finally {
@@ -103,56 +82,38 @@ window.handleLogin = async function(e) {
 }
 
 // =========================================================================
-// 4. FUNCIONES AUXILIARES Y CIERRE DE SESIÓN SEGURO
+// FUNCIONES AUXILIARES Y CIERRE DE SESIÓN SEGURO
 // =========================================================================
 window.darAccesoAlSistema = function(rol, nombreMostrar, ciUsuario, tokenUsuario) {
     localStorage.setItem("feria_rol", rol);
     localStorage.setItem("feria_nombre", nombreMostrar);
     
-    //  Guardamos el Ticket de Sesión si nos lo envían
     if (ciUsuario && tokenUsuario) {
         localStorage.setItem("feria_ci", ciUsuario);
         localStorage.setItem("feria_token", tokenUsuario);
     }
 
+    // Limpia la URL al iniciar sesión
+    window.history.replaceState({}, document.title, window.location.pathname);
+
     document.getElementById('login-screen').style.display = "none";
     document.getElementById('main-content').style.display = "block";
     document.body.classList.remove('login-active');
     
-    if (typeof window.applyPermissions === 'function') {
-        window.applyPermissions(rol, nombreMostrar);
-    }
-    
-    if (typeof window.reiniciarRelojInactividad === 'function') {
-        window.reiniciarRelojInactividad();
-    }
+    if (typeof window.applyPermissions === 'function') window.applyPermissions(rol, nombreMostrar);
+    if (typeof window.reiniciarRelojInactividad === 'function') window.reiniciarRelojInactividad();
 
-    //  Encendemos el radar para verificar si alguien más entra con esta cuenta
     window.iniciarMonitoreoSesion();
 }
 
 window.logout = function() { 
-    localStorage.removeItem("feria_rol");
-    localStorage.removeItem("feria_nombre");
-    localStorage.removeItem("feria_ci");     //  Borramos las credenciales locales
-    localStorage.removeItem("feria_token");
-
+    localStorage.clear();
     if (window.intervaloMonitoreo) clearInterval(window.intervaloMonitoreo);
-
-    if (typeof window.signOut === 'function' && window.auth && window.auth.currentUser) {
-        window.signOut(window.auth).then(() => {
-            window.location.reload(); 
-        }).catch((error) => {
-            console.error("Error cerrando Firebase:", error);
-            window.location.reload();
-        });
-    } else {
-        window.location.reload();
-    }
+    window.location.reload();
 }
 
 // =========================================================================
-//  NUEVO: RADAR DE SESIÓN ÚNICA ACTIVA
+// RADAR DE SESIÓN ÚNICA ACTIVA
 // =========================================================================
 window.intervaloMonitoreo = null;
 window.iniciarMonitoreoSesion = function() {
@@ -163,45 +124,34 @@ window.iniciarMonitoreoSesion = function() {
 
     if (window.intervaloMonitoreo) clearInterval(window.intervaloMonitoreo);
 
-    // Cada 10 segundos, el celular le preguntará a la BD si su ticket sigue siendo el oficial
     window.intervaloMonitoreo = setInterval(async () => {
         try {
             const res = await fetch(`/api/verificar_sesion/${ci}/${token}`);
             if (res.ok) {
                 const data = await res.json();
                 if (!data.valida) {
-                    //  ¡El ticket cambió en la BD! Alguien más inició sesión.
                     clearInterval(window.intervaloMonitoreo);
                     alert("🛑 SESIÓN CERRADA AUTOMÁTICAMENTE\n\nEl sistema detectó que alguien ha iniciado sesión con tu cuenta en otro dispositivo.\nPor motivos de seguridad, tu acceso en este dispositivo ha sido desconectado.");
                     window.logout(); 
                 }
             }
-        } catch (e) {
-            // Si hay problemas de internet momentáneos, no hacemos nada y esperamos a que regrese
-        }
+        } catch (e) {}
     }, 10000); 
 };
 
 // =========================================================================
-// 5. AUTO-LOGIN UNIVERSAL
+// AUTO-LOGIN UNIVERSAL
 // =========================================================================
 window.addEventListener('DOMContentLoaded', () => {
     const parametros = new URLSearchParams(window.location.search);
     const accion = parametros.get('action');
     const idProy = parametros.get('idProy'); 
 
-    if (idProy) { return; }
+    if (idProy) return;
 
     if (accion) {
-        localStorage.removeItem("feria_rol");
-        localStorage.removeItem("feria_nombre");
-        localStorage.removeItem("feria_ci");
-        localStorage.removeItem("feria_token");
+        localStorage.clear();
         if (window.intervaloMonitoreo) clearInterval(window.intervaloMonitoreo);
-
-        if (window.auth && typeof window.signOut === 'function') {
-            window.signOut(window.auth).catch(e => console.log(e));
-        }
 
         document.getElementById('login-screen').style.display = ""; 
         document.getElementById('main-content').style.display = "none";
@@ -217,38 +167,37 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const rolGuardado = localStorage.getItem("feria_rol");
     const nombreGuardado = localStorage.getItem("feria_nombre");
+    const tokenActivo = localStorage.getItem("feria_token");
 
+    // Visitantes entran directo
     if (rolGuardado === "VISITANTE") {
         document.getElementById('login-screen').style.display = "none";
         document.getElementById('main-content').style.display = "block";
         document.body.classList.remove('login-active');
         if (typeof window.applyPermissions === 'function') window.applyPermissions(rolGuardado, nombreGuardado);
         if (typeof window.reiniciarRelojInactividad === 'function') window.reiniciarRelojInactividad();
-        window.iniciarMonitoreoSesion(); //  Activamos el radar
+        window.iniciarMonitoreoSesion(); 
         return; 
     }
 
-    if (window.auth) {
-        window.auth.onAuthStateChanged((user) => {
-            if (user && rolGuardado) {
-                document.getElementById('login-screen').style.display = "none";
-                document.getElementById('main-content').style.display = "block";
-                document.body.classList.remove('login-active');
-                
-                if (typeof window.applyPermissions === 'function') window.applyPermissions(rolGuardado, nombreGuardado);
-                if (typeof window.reiniciarRelojInactividad === 'function') window.reiniciarRelojInactividad();
-                window.iniciarMonitoreoSesion(); // 🛡️ Activamos el radar
-            } else {
-                document.getElementById('login-screen').style.display = ""; 
-                document.getElementById('main-content').style.display = "none";
-                document.body.classList.add('login-active');
-            }
-        });
+    // Usuarios normales verifican token
+    if (rolGuardado && tokenActivo) {
+        document.getElementById('login-screen').style.display = "none";
+        document.getElementById('main-content').style.display = "block";
+        document.body.classList.remove('login-active');
+        
+        if (typeof window.applyPermissions === 'function') window.applyPermissions(rolGuardado, nombreGuardado);
+        if (typeof window.reiniciarRelojInactividad === 'function') window.reiniciarRelojInactividad();
+        window.iniciarMonitoreoSesion();
+    } else {
+        document.getElementById('login-screen').style.display = ""; 
+        document.getElementById('main-content').style.display = "none";
+        document.body.classList.add('login-active');
     }
 });
 
 // =========================================================================
-// 6. SEGURIDAD: TEMPORIZADOR DE INACTIVIDAD (AUTO-LOGOUT)
+// SEGURIDAD: TEMPORIZADOR DE INACTIVIDAD (AUTO-LOGOUT)
 // =========================================================================
 const TIEMPO_MAXIMO_INACTIVIDAD = 15 * 60 * 1000; 
 let temporizadorInactividad;
@@ -272,4 +221,3 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', window.reiniciarRelojInactividad, true);
     window.addEventListener('keydown', window.reiniciarRelojInactividad);
 });
-//.\ngrok http 300

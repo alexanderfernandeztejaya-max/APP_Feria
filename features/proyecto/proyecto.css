@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ARCHIVO: proyecto.css
+   ARCHIVO: features/proyecto/proyecto.css
    DISEÑO EXCLUSIVO: GLASSMORFISMO (CRISTAL TRANSLÚCIDO)
    ========================================================================== */
 
@@ -67,16 +67,24 @@ body, .module-section {
     color: #cce5ff !important;
 }
 
-/* 9. Estilo especial para el selector múltiple cuando se despliega */
+/* 9. Estilo especial para el selector múltiple */
 .form-group select option {
-    background-color: var(--azul-secundario) !important; /* Para que las opciones no se vean blancas */
+    background-color: var(--azul-secundario) !important; 
     color: #ffffff !important;
 }
-/* Forzar que todos los textos secundarios dentro del cristal sean blancos */
+
 .form-card p, 
 .form-card small, 
 .form-card span, 
 .form-card h4, 
 .form-card h5 {
     color: #e0e0e0 !important;
+}
+
+/* 🔥 PARCHE ANTI-PARPADEO DEFINITIVO: Sin !important para que el JS pueda encenderlo */
+#mi-proyecto .form-card {
+    display: none;
+}
+#panel-estado-proyecto {
+    display: none;
 }
