@@ -56,11 +56,12 @@ justify-content: center;
 align-items: center;
 gap: 40px;
 }
-/* 🔥 PC: TAMAÑO NORMAL Y ELEGANTE 🔥 */
+
+/* 🔥 PC: TAMAÑO GIGANTE Y ESCUDOS AMPLIADOS 🔥 */
 .main-circle {
-width: 130px; 
-height: 130px;
-border: 4px solid var(--rojo-uab, #d32f2f);
+width: 240px; 
+height: 240px;
+border: 5px solid var(--rojo-uab, #d32f2f);
 background: #fff;
 border-radius: 50%;
 box-shadow: 0 10px 25px rgba(0,0,0,0.5);
@@ -70,23 +71,23 @@ align-items: center;
 margin: 0 auto;
 }
 .institutional-shield {
-max-width: 85px; 
-max-height: 85px;
-width: auto;
-height: auto;
+max-width: 210px; /* Aumentado drásticamente para llenar el círculo */
+max-height: 210px; /* Aumentado drásticamente para llenar el círculo */
+width: 100%;
+height: 100%;
 object-fit: contain;
 }
 
 /* =========================================
-LINKS Y EFECTOS PARA LOS LOGOS DEL LOGIN
+🔥 LINKS Y EFECTOS PARA LOS LOGOS DEL LOGIN 🔥
 ========================================= */
 .institutional-logos-overlay {
 display: flex;
-gap: 15px;
+gap: 25px; 
 align-items: center;
 position: absolute;
-top: 20px;
-right: 30px;
+top: 30px; 
+right: 40px; 
 z-index: 10;
 }
 .logo-link {
@@ -99,10 +100,11 @@ transform: scale(1.15) translateY(-5px);
 }
 .overlay-logo {
 border-radius: 50%;
-box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-width: 70px; 
-height: 70px;
+box-shadow: 0 6px 16px rgba(0,0,0,0.6); 
+width: 100px; 
+height: 100px; 
 object-fit: cover;
+background-color: transparent; /* CORRECCIÓN: Fondo transparente para evitar el círculo blanco */
 }
 
 /* ==========================================================================
@@ -123,7 +125,16 @@ object-fit: cover;
     justify-content: flex-start;
 }
 
-/* 🔥 CELULAR: TAMAÑO GIGANTE (Mantiene el efecto de tu dibujo) 🔥 */
+.institutional-logos-overlay {
+    top: 15px !important;
+    right: 15px !important;
+    gap: 10px !important;
+}
+.overlay-logo {
+    width: 60px !important;
+    height: 60px !important;
+}
+
 .hero { padding-top: 120px; } 
 .hero-3-column-layout {
     display: flex !important;
@@ -138,15 +149,15 @@ object-fit: cover;
     width: 100%;
 }
 .main-circle { 
-    width: 250px !important; /* CÍRCULO GIGANTE */
+    width: 250px !important; 
     height: 250px !important; 
     border-width: 6px !important; 
     margin: 0 auto !important;
     padding: 15px !important;
 }
 .institutional-shield {
-    max-width: 180px !important; /* LOGO GIGANTE */
-    max-height: 180px !important;
+    max-width: 220px !important; /* Aumentado para que el escudo se vea imponente en móvil */
+    max-height: 220px !important; /* Aumentado para que el escudo se vea imponente en móvil */
     width: 100% !important;
     height: 100% !important;
     object-fit: contain !important;
@@ -195,7 +206,7 @@ object-fit: cover;
 @media screen and (max-width: 480px) {
 .hero-center-content h1.text-floating { font-size: 2.6rem !important; }
 .main-circle { width: 220px !important; height: 220px !important; }
-.institutional-shield { max-width: 150px !important; max-height: 150px !important; }
+.institutional-shield { max-width: 190px !important; max-height: 190px !important; }
 .app-title-login { font-size: 1.25rem; }
 }
 

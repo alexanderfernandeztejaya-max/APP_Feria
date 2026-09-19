@@ -63,7 +63,7 @@ window.navigate = function(id, el) {
     }
 
     if(id === 'mi-proyecto') {
-        // 🔥 MAGIA DE PARPADEO: Ocultamos la tarjeta por JS ANTES de llamar a PostgreSQL
+        //  MAGIA DE PARPADEO: Ocultamos la tarjeta por JS ANTES de llamar a PostgreSQL
         const formCard = document.querySelector('#mi-proyecto .form-card');
         if (formCard) formCard.style.display = 'none';
         

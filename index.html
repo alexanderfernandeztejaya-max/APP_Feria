@@ -7,16 +7,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- 🔥 VERSIÓN V20: APLICA TAMAÑO NORMAL A PC Y GIGANTE A CELULAR 🔥 -->
-    <link rel="stylesheet" href="assets/css/global.css?v=FERIA_V20">
-    <link rel="stylesheet" href="features/proyecto/proyecto.css?v=FERIA_V20">
-    <link rel="stylesheet" href="features/auth/auth.css?v=FERIA_V20">
-    <link rel="stylesheet" href="features/dashboard/dashboard.css?v=FERIA_V20">
-    <link rel="stylesheet" href="features/admin/admin.css?v=FERIA_V20">
-    <link rel="stylesheet" href="features/informes/informes.css?v=FERIA_V20">
-    <link rel="stylesheet" href="features/resultados/resultados.css?v=FERIA_V20">
+    
+    <link rel="stylesheet" href="assets/css/global.css?v=FERIA_V24">
+    <link rel="stylesheet" href="features/proyecto/proyecto.css?v=FERIA_V23">
+    <link rel="stylesheet" href="features/auth/auth.css?v=FERIA_V23">
+    <link rel="stylesheet" href="features/dashboard/dashboard.css?v=FERIA_V23">
+    <link rel="stylesheet" href="features/admin/admin.css?v=FERIA_V23">
+    <link rel="stylesheet" href="features/informes/informes.css?v=FERIA_V23">
+    <link rel="stylesheet" href="features/resultados/resultados.css?v=FERIA_V23">
 
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body class="login-active">
 
@@ -118,17 +117,30 @@
                 </div>
             </div>
 
+            
             <div id="recover-card" class="modern-form-wrapper" style="display: none;">
                 <h1 class="animate-fade-up delay-100" style="font-size: 2rem;">Restablecer</h1>
-                <p class="animate-fade-up delay-200 text-muted">Le enviaremos un enlace seguro a su correo.</p>
+                <p class="animate-fade-up delay-200 text-muted">Valide sus datos para crear una nueva contraseña.</p>
                 <form onsubmit="window.recuperarContrasena(event)" class="modern-form animate-fade-up delay-300">
                     <div class="input-group">
                         <div class="glass-input-wrapper">
-                            <i class="fas fa-envelope input-icon"></i>
-                            <input type="email" id="recoverEmail" placeholder="ejemplo@correo.com" required>
+                            <i class="fas fa-id-card input-icon"></i>
+                            <input type="text" id="recoverCI" placeholder="Su CI o Usuario" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn-modern-login animate-fade-up delay-400">Enviar Enlace</button>
+                    <div class="input-group">
+                        <div class="glass-input-wrapper">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" id="recoverEmail" placeholder="Su Correo Registrado" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="glass-input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="recoverNewPass" placeholder="Su Nueva Contraseña" required minlength="6">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-modern-login animate-fade-up delay-400">Actualizar Contraseña</button>
                 </form>
                 <div class="auth-toggle modern-auth-toggle animate-fade-up delay-500">
                     <button class="btn-outline" onclick="toggleAuthMode(event, 'login')"><i class="fas fa-arrow-left"></i> Volver al Login</button>
@@ -179,7 +191,7 @@
             
             <div class="institutional-logos-overlay animate-fade-up delay-200">
                 <a href="#" target="_blank" class="logo-link" title="Carrera Acreditada">
-                    <img src="assets/img/LogoAcreditadaa.jpg" alt="Carrera Acreditada" class="overlay-logo">
+                    <img src="assets/img/LogoAcreditadaa.png" alt="Carrera Acreditada" class="overlay-logo">
                 </a>
                 <a href="#" target="_blank" class="logo-link" title="Ingeniería de Sistemas">
                     <img src="assets/img/logo_sistemas.png" alt="Ingeniería de Sistemas" class="overlay-logo">
@@ -850,18 +862,18 @@
         </section>
     </div>
     
-    <script src="core/utils.js?v=FERIA_V20"></script>
-    <script src="core/router.js?v=FERIA_V20"></script>
-    <script src="features/auth/auth.js?v=FERIA_V20"></script>
-    <script type="module" src="features/RestablecerContra/RestablecerContra.js?v=FERIA_V20"></script>
-    <script src="features/admin/admin.js?v=FERIA_V20"></script>
-    <script src="features/votacion/votacion.js?v=FERIA_V20"></script>
-    <script src="features/habilitacion/habilitacion.js?v=FERIA_V20"></script>
-    <script src="features/registro/registro.js?v=FERIA_V20"></script>
-    <script src="features/proyecto/proyecto.js?v=FERIA_V20"></script>
-    <script src="features/registroTribunal/registroTribunal.js?v=FERIA_V20"></script> 
-    <script src="features/evaluacion/evaluacion.js?v=FERIA_V20"></script>
-    <script src="features/resultados/resultados.js?v=FERIA_V20"></script>
-    <script src="features/informes/informes.js?v=FERIA_V20"></script>
+    <script src="core/utils.js?v=FERIA_V23"></script>
+    <script src="core/router.js?v=FERIA_V23"></script>
+    <script src="features/auth/auth.js?v=FERIA_V23"></script>
+    <script type="module" src="features/RestablecerContra/RestablecerContra.js?v=FERIA_V24"></script>
+    <script src="features/admin/admin.js?v=FERIA_V23"></script>
+    <script src="features/votacion/votacion.js?v=FERIA_V23"></script>
+    <script src="features/habilitacion/habilitacion.js?v=FERIA_V23"></script>
+    <script src="features/registro/registro.js?v=FERIA_V23"></script>
+    <script src="features/proyecto/proyecto.js?v=FERIA_V23"></script>
+    <script src="features/registroTribunal/registroTribunal.js?v=FERIA_V23"></script> 
+    <script src="features/evaluacion/evaluacion.js?v=FERIA_V23"></script>
+    <script src="features/resultados/resultados.js?v=FERIA_V23"></script>
+    <script src="features/informes/informes.js?v=FERIA_V23"></script>
 </body>
 </html>

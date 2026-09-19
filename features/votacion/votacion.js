@@ -5,7 +5,7 @@
 
 let calificacionActual = 0;
 
-// 📍 CONFIGURACIÓN DEL CERCO VIRTUAL (GEOFENCING)
+//  CONFIGURACIÓN DEL CERCO VIRTUAL (GEOFENCING)
 const LATITUD_FERIA = -14.833937564763247;   //mi casa -14.834002316055194, -64.89944331965522, UABJB -14.812559732228735, -64.89515149760588
 const LONGITUD_FERIA = -64.899433750549;  
 const RADIO_PERMITIDO_METROS = 500; 
@@ -119,7 +119,7 @@ window.calificarConEstrellas = function(nota) {
     window.simularVerificacionCI(); 
 }
 
-// ⏳ FUNCIÓN ESPECIAL: Obliga al sistema a esperar la respuesta del GPS del usuario
+//  FUNCIÓN ESPECIAL: Obliga al sistema a esperar la respuesta del GPS del usuario
 function obtenerUbicacionGPS() {
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
@@ -139,7 +139,7 @@ function obtenerUbicacionGPS() {
     });
 }
 
-// 🔥 ENVÍO DE VOTO CON CONTROL ABSOLUTO DE ESTADO
+//  ENVÍO DE VOTO CON CONTROL ABSOLUTO DE ESTADO
 window.enviarCalificacion = async function(e) {
     e.preventDefault();
     const btn = document.getElementById('btnEnviarVoto');

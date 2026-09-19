@@ -31,7 +31,7 @@
    .btn-detalle:hover { background-color: #001f3f; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
    
    /* =========================================
-      🔥 CORRECCIÓN: TABLA DE MÁS DETALLES (MODO OSCURO)
+       CORRECCIÓN: TABLA DE MÁS DETALLES (MODO OSCURO)
       ========================================= */
    
    /* 1. Arreglar el contenedor para que haga juego con el Dashboard oscuro */

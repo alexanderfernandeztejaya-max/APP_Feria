@@ -78,7 +78,7 @@ app.post('/api/configuraciones', async (req, res) => {
 
 app.get('/api/instituciones', async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM instituciones ORDER BY tipo DESC, nombre ASC');
+        const result = await db.query('SELECT * FROM institutions ORDER BY tipo DESC, nombre ASC');
         res.json(result.rows);
     } catch (error) { res.status(500).json({ error: "Error al obtener instituciones" }); }
 });
@@ -170,8 +170,51 @@ app.get('/api/usuarios/:identificador', async (req, res) => {
         if (!rolEncontrado) {
             return res.status(404).json({ error: "Usuario no encontrado." });
         }
+
         res.json({ rol: rolEncontrado, datos: datosEncontrados });
     } catch (error) { res.status(500).json({ error: "Error interno del servidor." }); }
+});
+
+// 🔥 NUEVO ENDPOINT: RESTABLECIMIENTO DIRECTO SIN EMAILJS 🔥
+app.post('/api/restablecer_password_directo', async (req, res) => {
+    const { ci, correo, nuevaPassword } = req.body;
+    try {
+        let tabla = null;
+
+        // 1. Verificamos que el CI y el Correo coincidan EXACTAMENTE en la misma cuenta
+        let q = await db.query('SELECT * FROM administradores WHERE ci = $1 AND correo = $2', [ci, correo]);
+        if (q.rows.length > 0) tabla = 'administradores';
+        
+        if (!tabla) {
+            q = await db.query('SELECT * FROM expositores WHERE ci = $1 AND correo = $2', [ci, correo]);
+            if (q.rows.length > 0) tabla = 'expositores';
+        }
+
+        if (!tabla) {
+            // En tribunales, el identificador es 'usuario_tribunal'
+            q = await db.query('SELECT * FROM tribunales WHERE usuario_tribunal = $1 AND correo = $2', [ci, correo]);
+            if (q.rows.length > 0) tabla = 'tribunales';
+        }
+
+        // Si no coinciden, rechazamos por seguridad
+        if (!tabla) {
+            return res.status(404).json({ error: "⛔ Datos incorrectos. El Carnet/Usuario no coincide con ese correo en nuestros registros." });
+        }
+
+        // 2. Encriptamos la NUEVA contraseña que eligió el usuario
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(nuevaPassword, salt);
+
+        // 3. Actualizamos la base de datos
+        if (tabla === 'administradores') await db.query('UPDATE administradores SET contrasena = $1 WHERE ci = $2', [hash, ci]);
+        if (tabla === 'expositores') await db.query('UPDATE expositores SET contrasena = $1 WHERE ci = $2', [hash, ci]);
+        if (tabla === 'tribunales') await db.query('UPDATE tribunales SET contrasena = $1 WHERE usuario_tribunal = $2', [hash, ci]);
+
+        res.json({ mensaje: "Tu contraseña ha sido actualizada correctamente." });
+
+    } catch (error) {
+        res.status(500).json({ error: "Error interno al intentar cambiar la contraseña." });
+    }
 });
 
 app.post('/api/administradores', async (req, res) => {
@@ -411,7 +454,6 @@ app.get('/api/datos_informes', async (req, res) => {
     } catch (error) { res.status(500).json({ error: "Error al empaquetar los datos" }); }
 });
 
-// 🔥 BLINDAJE DE EXTRACCIÓN DE RESULTADOS (SOLO ADMIN O DESPUÉS DE LA FECHA)
 app.get('/api/resultados', async (req, res) => {
     const { ci } = req.query;
     try {

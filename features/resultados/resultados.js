@@ -73,12 +73,12 @@ window.calcularResultadosEnTiempoReal = async function() {
 
 window.renderizarTablasRanking = async function() {
     try {
-        // 🔥 Envía el CI al servidor para demostrar si somos administradores o público
+        //  Envía el CI al servidor para demostrar si somos administradores o público
         const ciFeria = localStorage.getItem("feria_ci") || "publico";
         const respuesta = await fetch(`/api/resultados?ci=${ciFeria}`);
         const data = await respuesta.json();
 
-        // 🔥 Si el servidor nos mandó a volar porque no es la fecha y no somos admin, cortamos el código aquí.
+        //  Si el servidor nos mandó a volar porque no es la fecha y no somos admin, cortamos el código aquí.
         if (data.error) {
             console.warn(data.error);
             return;

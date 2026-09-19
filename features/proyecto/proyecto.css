@@ -81,7 +81,7 @@ body, .module-section {
     color: #e0e0e0 !important;
 }
 
-/* 🔥 PARCHE ANTI-PARPADEO DEFINITIVO: Sin !important para que el JS pueda encenderlo */
+/*  PARCHE ANTI-PARPADEO DEFINITIVO: Sin !important para que el JS pueda encenderlo */
 #mi-proyecto .form-card {
     display: none;
 }

@@ -60,7 +60,7 @@ window.cargarDatosProyecto = async function() {
             tarjetaBlanca.parentNode.insertBefore(divEstado, tarjetaBlanca);
         }
         
-        // 🔥 SOLUCIÓN: Si es Admin, encendemos el formulario inmediatamente y cortamos la función.
+        //  SOLUCIÓN: Si es Admin, encendemos el formulario inmediatamente y cortamos la función.
         if (rolActual === "ADMIN") {
             if (divEstado) divEstado.style.display = 'none';
             if (tarjetaBlanca) {

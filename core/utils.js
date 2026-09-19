@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// 🔥 MAGIA: Jalar datos, autocompletar y BLOQUEAR casillas al escribir CI
+//  MAGIA: Jalar datos, autocompletar y BLOQUEAR casillas al escribir CI
 document.addEventListener("input", async function(e) {
     const id = e.target.id;
     if (id === 'preCI' || id === 'hab-ci' || id === 'admin-hab-ci') {
@@ -107,7 +107,7 @@ document.addEventListener("input", async function(e) {
     }
 });
 
-// 🔥 VISOR UNIVERSAL BLINDADO (Usa PDF.js en PC y Móvil para evitar descargas)
+//  VISOR UNIVERSAL BLINDADO (Usa PDF.js en PC y Móvil para evitar descargas)
 window.abrirVisorPDF = function(url) {
     if (!url || url === "undefined" || url === "null" || url === "") {
         alert('⚠️ Este proyecto no tiene un documento PDF subido.'); return;
